@@ -32,36 +32,6 @@ FASE3/
     └── config.example.h
 ```
 
-## Checklist de Entregáveis (Avaliação)
-
-Esta seção mapeia todos os requisitos da atividade para seus respectivos artefatos no projeto, garantindo que todos os critérios foram atendidos.
-
-| Requisito                                      | Status      | Artefato(s) Correspondente(s)                                                                                             |
-| ---------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **Parte 1: Edge Computing**                    |             |                                                                                                                           |
-| App Wokwi com ESP32 e 2 sensores               | ✅ Completo | `wokwi/sketch.ino`, `wokwi/diagram.json`                                                                                  |
-| Armazenamento local em SPIFFS                  | ✅ Completo | `wokwi/sketch.ino` (funções `appendQueue`, `ensureSPIFFS`)                                                                |
-| Resiliência offline e sincronização            | ✅ Completo | `wokwi/sketch.ino` (funções `publishOrQueue`, `flushQueue`)                                                               |
-| Código C++ comentado                           | ✅ Completo | `wokwi/sketch.ino`                                                                                                        |
-| Relatório de fluxo e resiliência (1 pág. min)  | ✅ Completo | `reports/REPORT_EDGE.md`                                                                                                  |
-| **Parte 2: Cloud/Fog Computing**               |             |                                                                                                                           |
-| Envio de dados via MQTT para broker na nuvem   | ✅ Completo | `wokwi/sketch.ino` (integrado com HiveMQ Cloud)                                                                           |
-| Dashboard em Node-RED                          | ✅ Completo | `node-red/flow-hivemq-cloud.json`                                                                                           |
-| Gráfico de sinal vital (BPM)                   | ✅ Completo | Node-RED: Nó `ui_chart`                                                                                                   |
-| Medidor/gauge (Temperatura)                    | ✅ Completo | Node-RED: Nó `ui_gauge`                                                                                                   |
-| Alerta visual para valores anômalos            | ✅ Completo | Node-RED: Nós `switch` e `ui_text`                                                                                        |
-| Relatório de comunicação MQTT (2 pág. min)     | ✅ Completo | `reports/REPORT_MQTT_DASH.md`                                                                                             |
-| **Ir Além 1: API REST e Alertas**              |             |                                                                                                                           |
-| Cliente e Servidor REST em Python              | ✅ Completo | `ir-alem/client.py`, `ir-alem/rest_alerts.py`                                                                             |
-| Lógica de verificação de risco                 | ✅ Completo | `ir-alem/rest_alerts.py` (função `risk_check`)                                                                            |
-| Simulação de disparo de e-mail                 | ✅ Completo | `ir-alem/rest_alerts.py` (função `send_email` com modo simulado)                                                          |
-| Relatório do fluxo implementado (1-2 pág.)     | ✅ Completo | `ir-alem/REPORT_REST.md`                                                                                                  |
-| **Ir Além 2: Análise de Séries Temporais**     |             |                                                                                                                           |
-| Notebook Python comentado                      | ✅ Completo | `notebooks/phase3_time_series.ipynb`                                                                                      |
-| Comparação de métodos (Z-score vs MAD)         | ✅ Completo | `notebooks/phase3_time_series.ipynb`                                                                                      |
-| Relatório comparativo (2 pág.)                 | ✅ Completo | `notebooks/REPORT_TIMESERIES.md`                                                                                          |
-| Vídeo de 4 min apresentando resultados         | ⚠️ **Pendente** | **Ação manual necessária.** O vídeo deve ser gravado e o link inserido neste README.                                      |
-
 ---
 
 ## Como Executar o Projeto
