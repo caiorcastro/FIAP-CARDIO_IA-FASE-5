@@ -70,9 +70,20 @@ FASE3/
 ### 3. API de Alertas (Python REST API)
 
 1.  **Navegar para o diretório:** `cd FASE3/ir-alem`
-2.  **Instalar dependências:** `pip install -r requirements.txt`
-3.  **Executar o servidor:** `uvicorn rest_alerts:app --reload`
-4.  **Executar o cliente (em outro terminal):** `python client.py`
+2.  **Criar e ativar o ambiente virtual:**
+    ```bash
+    # Criar o venv (só na primeira vez)
+    python -m venv .venv
+
+    # Ativar o venv (Windows)
+    .venv\Scripts\activate
+
+    # Ativar o venv (Linux/macOS)
+    # source .venv/bin/activate
+    ```
+3.  **Instalar dependências:** `pip install -r requirements.txt`
+4.  **Executar o servidor:** `uvicorn rest_alerts:app --reload`
+5.  **Executar o cliente (em outro terminal, com o venv ativado):** `python client.py`
 
 O servidor irá processar os dados e imprimir alertas no console (em modo simulado).
 
