@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.venv/
+env/
+venv/
+.env
+.env.*
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Node / Frontend
+node_modules/
+dist/
+*.log
+
+# OS/Editor
+.DS_Store
+Thumbs.db
+
+# Local aux files
+CardioIA-Phase2/
+read_pdf.py
+read_pdf_pdfminer.py
+ocr_pdf.py
+tmp_p3_*.txt
+FIAP FASE 3.txt
+
