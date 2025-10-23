@@ -1,6 +1,6 @@
 # CardioIA - Fase 3: Monitoramento Contínuo de Saúde com IoT
 
-## Visão Geral do Projeto
+## Visão Geral do Projeto 
 
 Este projeto implementa um protótipo funcional de um sistema de monitoramento de saúde, integrando conceitos de Edge, Fog e Cloud Computing. A solução simula a coleta de sinais vitais de um paciente, o processamento local, a transmissão para a nuvem, a visualização em um dashboard e o disparo de alertas automatizados.
 
