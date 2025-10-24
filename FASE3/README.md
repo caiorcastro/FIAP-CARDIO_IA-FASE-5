@@ -8,12 +8,12 @@ Protótipo completo: ESP32 (Wokwi) com DHT22 + botão (BPM), SPIFFS com resiliê
 
 ```mermaid
 flowchart TD
-  A[ESP32 (Wokwi)\nDHT22 + Botão/BPM\nSPIFFS + Resiliência] -->|TLS 8883 / JSON| B[(HiveMQ Cloud MQTT)]
-  B --> C[Node‑RED\nFlow + Dashboard]
-  C --> D[UI em tempo real\nGráfico BPM / Gauge Temp / Alertas]
-  A -.->|Evidência| E[Flush da fila SPIFFS\napós reconexão]
-  F[Cliente REST] --> G[FastAPI /vitals\nRegras de risco]
-  G --> H[E‑mail (SMTP)\nSimulado/Real]
+  A[ESP32 (Wokwi)<br/>DHT22 + Botão/BPM<br/>SPIFFS + Resiliência] -->|TLS 8883 / JSON| B[(HiveMQ Cloud MQTT)]
+  B --> C[Node‑RED<br/>Flow + Dashboard]
+  C --> D[UI em tempo real<br/>Gráfico BPM / Gauge Temp / Alertas]
+  A -.->|Evidência| E[Flush da fila SPIFFS<br/>após reconexão]
+  F[Cliente REST] --> G[FastAPI /vitals<br/>Regras de risco]
+  G --> H[E‑mail (SMTP)<br/>Simulado/Real]
 ```
 
 ## Estrutura

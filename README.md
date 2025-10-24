@@ -32,19 +32,12 @@ O projeto implementa um protótipo funcional de monitoramento cardiológico cont
 
 ```mermaid
 flowchart TD
-  A[ESP32 (Wokwi)
-  DHT22 + Botão/BPM
-  SPIFFS + Resiliência] -->|TLS 8883 / JSON| B[(HiveMQ Cloud MQTT)]
-  B --> C[Node‑RED
-  Flow + Dashboard]
-  C --> D[UI em tempo real
-  Gráfico BPM / Gauge Temp / Alertas]
-  A -.->|Evidências| E[Flush da fila SPIFFS
-  após reconexão]
-  F[Cliente REST] --> G[FastAPI /vitals
-  Regras de risco]
-  G --> H[E‑mail (SMTP)
-  Simulado/Real]
+  A[ESP32 (Wokwi)<br/>DHT22 + Botão/BPM<br/>SPIFFS + Resiliência] -->|TLS 8883 / JSON| B[(HiveMQ Cloud MQTT)]
+  B --> C[Node‑RED<br/>Flow + Dashboard]
+  C --> D[UI em tempo real<br/>Gráfico BPM / Gauge Temp / Alertas]
+  A -.->|Evidências| E[Flush da fila SPIFFS<br/>após reconexão]
+  F[Cliente REST] --> G[FastAPI /vitals<br/>Regras de risco]
+  G --> H[E‑mail (SMTP)<br/>Simulado/Real]
 ```
 
 Links rápidos:
