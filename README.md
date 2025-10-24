@@ -28,6 +28,30 @@
 ## Descrição
 O projeto implementa um protótipo funcional de monitoramento cardiológico contínuo, integrando ESP32 (Wokwi), armazenamento local (SPIFFS) com resiliência offline, transmissão segura para a nuvem via MQTT (HiveMQ Cloud, TLS 8883), visualização em tempo real (Node‑RED Dashboard) e automação de alertas (REST + e‑mail). Complementarmente, há um notebook com análise simplificada de séries temporais (detecção de anomalias em BPM/temperatura).
 
+## Arquitetura
+
+```mermaid
+flowchart TD
+  A[ESP32 (Wokwi)
+  DHT22 + Botão/BPM
+  SPIFFS + Resiliência] -->|TLS 8883 / JSON| B[(HiveMQ Cloud MQTT)]
+  B --> C[Node‑RED
+  Flow + Dashboard]
+  C --> D[UI em tempo real
+  Gráfico BPM / Gauge Temp / Alertas]
+  A -.->|Evidências| E[Flush da fila SPIFFS
+  após reconexão]
+  F[Cliente REST] --> G[FastAPI /vitals
+  Regras de risco]
+  G --> H[E‑mail (SMTP)
+  Simulado/Real]
+```
+
+Links rápidos:
+- Wokwi (público): https://wokwi.com/projects/445645684122269697
+- Node‑RED (local): http://127.0.0.1:1880/ui
+- Tópico MQTT: `cardioia/grupo1/vitals`
+
 ## Estrutura de pastas
 - `.github/`: automações e configs GitHub
 - `assets/`: imagens e artefatos estáticos
@@ -42,6 +66,14 @@ O projeto implementa um protótipo funcional de monitoramento cardiológico cont
 - Node‑RED: importe `FASE3/node-red/flow-hivemq-cloud.json` (TLS 8883) e preencha usuário/senha; acesse `http://127.0.0.1:1880/ui`.
 - REST + E‑mail: siga `FASE3/ir-alem/README.md` para executar servidor e cliente.
 - Notebook: abra `FASE3/notebooks/phase3_time_series.ipynb` no Jupyter.
+
+## Evidências Visuais
+
+| Wokwi (rodando) | Node‑RED (Dashboard) | Node‑RED (Fluxo) |
+|---|---|---|
+| ![](FASE3/reports/images/wokwi_running.png) | ![](FASE3/reports/images/node_red_dashboard.png) | ![](FASE3/reports/images/node_red_flow.png) |
+
+Evidência de pub/sub MQTT (TLS 8883): ver `FASE3/reports/evidence_mqtt.txt`.
 
 ## Documentos
 - Ver `document/README.md` para links dos relatórios (Parte 1, Parte 2, IR ALÉM 1 e 2) e evidências.
