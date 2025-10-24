@@ -28,17 +28,13 @@
 ## Descrição
 O projeto implementa um protótipo funcional de monitoramento cardiológico contínuo, integrando ESP32 (Wokwi), armazenamento local (SPIFFS) com resiliência offline, transmissão segura para a nuvem via MQTT (HiveMQ Cloud, TLS 8883), visualização em tempo real (Node‑RED Dashboard) e automação de alertas (REST + e‑mail). Complementarmente, há um notebook com análise simplificada de séries temporais (detecção de anomalias em BPM/temperatura).
 
-## Arquitetura
+## Arquitetura (resumo)
 
-```mermaid
-flowchart TD
-  A[ESP32 (Wokwi)<br/>DHT22 + Botão/BPM<br/>SPIFFS + Resiliência] -->|TLS 8883 / JSON| B[(HiveMQ Cloud MQTT)]
-  B --> C[Node‑RED<br/>Flow + Dashboard]
-  C --> D[UI em tempo real<br/>Gráfico BPM / Gauge Temp / Alertas]
-  A -.->|Evidências| E[Flush da fila SPIFFS<br/>após reconexão]
-  F[Cliente REST] --> G[FastAPI /vitals<br/>Regras de risco]
-  G --> H[E‑mail (SMTP)<br/>Simulado/Real]
-```
+- ESP32 (Wokwi): DHT22 + botão (BPM) → SPIFFS com fila e resiliência
+- MQTT (HiveMQ Cloud, TLS 8883) com validação de certificado
+- Node‑RED: fluxo + dashboard (gráfico BPM, gauge temperatura, alerta)
+- REST + e‑mail (FastAPI /vitals) com regra de risco (bpm>120, temp>38)
+- Notebook de séries temporais (anomalias de BPM/temperatura)
 
 Links rápidos:
 - Wokwi (público): https://wokwi.com/projects/445645684122269697

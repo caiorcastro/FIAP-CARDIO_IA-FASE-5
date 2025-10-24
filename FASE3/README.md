@@ -4,17 +4,13 @@
 
 Protótipo completo: ESP32 (Wokwi) com DHT22 + botão (BPM), SPIFFS com resiliência offline, publicação segura em MQTT (HiveMQ Cloud TLS 8883), dashboard em tempo real (Node‑RED) e automação de alertas (REST + e‑mail). Notebook demonstra detecção de anomalias simples em séries temporais.
 
-## Arquitetura
+## Arquitetura (resumo)
 
-```mermaid
-flowchart TD
-  A[ESP32 (Wokwi)<br/>DHT22 + Botão/BPM<br/>SPIFFS + Resiliência] -->|TLS 8883 / JSON| B[(HiveMQ Cloud MQTT)]
-  B --> C[Node‑RED<br/>Flow + Dashboard]
-  C --> D[UI em tempo real<br/>Gráfico BPM / Gauge Temp / Alertas]
-  A -.->|Evidência| E[Flush da fila SPIFFS<br/>após reconexão]
-  F[Cliente REST] --> G[FastAPI /vitals<br/>Regras de risco]
-  G --> H[E‑mail (SMTP)<br/>Simulado/Real]
-```
+- ESP32 (Wokwi): DHT22 + botão (BPM) → SPIFFS com fila e resiliência
+- MQTT (HiveMQ Cloud, TLS 8883) com validação de certificado
+- Node‑RED: fluxo + dashboard (gráfico BPM, gauge temperatura, alerta)
+- REST + e‑mail (FastAPI /vitals) com regra de risco (bpm>120, temp>38)
+- Notebook de séries temporais (anomalias de BPM/temperatura)
 
 ## Estrutura
 
