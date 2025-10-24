@@ -10,10 +10,9 @@
   "connections": [
     [ "dht:VCC", "esp:3V3", "red" ],
     [ "dht:GND", "esp:GND", "black" ],
-    [ "dht:SDA", "esp:D15", "green" ],
+    [ "dht:DATA", "esp:D15", "green" ],
 
     [ "btn:1.l", "esp:D4", "yellow" ],
-    [ "btn:2.l", "esp:3V3", "red" ]
+    [ "btn:2.l", "esp:GND", "black" ]
   ]
 }
-
