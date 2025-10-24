@@ -35,8 +35,14 @@ Este relatório descreve o fluxo de funcionamento do protótipo ESP32 no Wokwi, 
 - O SSID padrão para simulação é `Wokwi-GUEST`. Ajuste `WIFI_SSID/WIFI_PASS` para cenários reais.
 - O botão incrementa batimentos; o DHT22 gera temperatura/umidade. Leituras inválidas são suavemente simuladas.
 
-## Evidências (anexar prints)
+## Evidências
 
 - Link público Wokwi da simulação: https://wokwi.com/projects/445645684122269697
-- Console do ESP32 publicando MQTT: imagem `images/wokwi_running.png`.
-- Fila SPIFFS sendo esvaziada após reconexão: imagem `images/esp32_flush_queue.png`.
+- Prova de conectividade MQTT (TLS 8883): `FASE3/reports/evidence_mqtt.txt` (pub/sub com HiveMQ Cloud)
+- Dashboard ativo do Node‑RED (prints):
+  - Fluxo: `images/node_red_flow.png`
+  - Dashboard: `images/node_red_dashboard.png`
+  
+Opcional (adicionar quando executar a simulação no Wokwi):
+- Console do ESP32 publicando MQTT: `images/wokwi_running.png`.
+- Fila SPIFFS sendo esvaziada após reconexão: `images/esp32_flush_queue.png`.
