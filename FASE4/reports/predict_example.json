@@ -1,0 +1,10 @@
+{
+  "path": "FASE4\\data\\raw\\chest_xray\\test\\NORMAL\\IM-0001-0001.jpeg",
+  "response": {
+    "probs": {
+      "normal": 0.6987,
+      "pneumonia": 0.3013
+    },
+    "top_class": "normal"
+  }
+}

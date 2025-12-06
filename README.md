@@ -1,4 +1,4 @@
-# FIAP - Faculdade de Informática e Administração Paulista
+# FIAP - Faculdade de Informatica e Administracao Paulista
 
 <p align="center">
   <a href="https://www.fiap.com.br/">
@@ -8,9 +8,9 @@
 
 <br>
 
-# CardioIA — Fase 3: Monitoramento Contínuo IoT
+# CardioIA - Fase 3: Monitoramento Continuo IoT
 
-## Grupo 1 — CardioIA
+## Grupo 1 - CardioIA
 
 ## Integrantes
 - <a href="https://www.linkedin.com/in/caiorcastro/">Caio Rodrigues Castro</a>
@@ -23,52 +23,56 @@
 ### Tutor(a)
 - <a href="https://www.linkedin.com/in/leonardoorabona/">Leonardo Ruiz Orabona</a>
 ### Coordenador(a)
-- <a href="https://www.linkedin.com/in/profandregodoi/">André Godoi</a>
+- <a href="https://www.linkedin.com/in/profandregodoi/">Andre Godoi</a>
 
-## Descrição
-O projeto implementa um protótipo funcional de monitoramento cardiológico contínuo, integrando ESP32 (Wokwi), armazenamento local (SPIFFS) com resiliência offline, transmissão segura para a nuvem via MQTT (HiveMQ Cloud, TLS 8883), visualização em tempo real (Node‑RED Dashboard) e automação de alertas (REST + e‑mail). Complementarmente, há um notebook com análise simplificada de séries temporais (detecção de anomalias em BPM/temperatura).
+## Descricao
+Projeto de monitoramento cardiologico continuo: ESP32 (Wokwi) com DHT22 + botao (BPM), SPIFFS com fila e resiliencia offline, MQTT com TLS (HiveMQ Cloud), dashboard em Node-RED e alertas via REST + e-mail. Notebook simples de series temporais para anomalias (BPM/temperatura).
 
 ## Arquitetura (resumo)
+- ESP32 (Wokwi): DHT22 + botao (BPM) -> SPIFFS com fila e resiliencia
+- MQTT (HiveMQ Cloud, TLS 8883) com validacao de certificado
+- Node-RED: fluxo + dashboard (grafico BPM, gauge temperatura, alerta)
+- REST + e-mail (FastAPI /vitals) com regra de risco (bpm>120, temp>38)
+- Notebook de series temporais (anomalias de BPM/temperatura)
 
-- ESP32 (Wokwi): DHT22 + botão (BPM) → SPIFFS com fila e resiliência
-- MQTT (HiveMQ Cloud, TLS 8883) com validação de certificado
-- Node‑RED: fluxo + dashboard (gráfico BPM, gauge temperatura, alerta)
-- REST + e‑mail (FastAPI /vitals) com regra de risco (bpm>120, temp>38)
-- Notebook de séries temporais (anomalias de BPM/temperatura)
-
-Links rápidos:
-- Wokwi (público): https://wokwi.com/projects/445645684122269697
-- Node‑RED (local): http://127.0.0.1:1880/ui
-- Tópico MQTT: `cardioia/grupo1/vitals`
+Links rapidos:
+- Wokwi (publico): https://wokwi.com/projects/445645684122269697
+- Node-RED (local): http://127.0.0.1:1880/ui
+- Topico MQTT: `cardioia/grupo1/vitals`
 
 ## Estrutura de pastas
-- `.github/`: automações e configs GitHub
-- `assets/`: imagens e artefatos estáticos
-- `config/`: arquivos de configuração (se aplicável)
-- `document/`: relatórios e documentos do projeto (links para relatórios detalhados)
+- `.github/`: automatizacoes e configs GitHub
+- `assets/`: imagens e artefatos estaticos
+- `config/`: arquivos de configuracao (se aplicavel)
+- `document/`: relatorios e documentos do projeto
 - `scripts/`: scripts auxiliares
-- `src/`: código‑fonte (ver FASE3 na raiz)
- - `FASE3/`: artefatos da Fase 3 (ESP32, Node‑RED, REST, Notebooks, Evidências)
- - `FASES/`: cópias de referência das fases anteriores (quando disponíveis)
+- `src/`: codigo-fonte
+  - `FASE3/`: artefatos da Fase 3 (ESP32, Node-RED, REST, Notebooks, Evidencias)
+  - `FASES/`: copias de referencia das fases anteriores (quando disponiveis)
+  - `FASE4/`: artefatos da fase atual de visao computacional (ver abaixo)
 
-## Como executar o código (Fase 3)
-- Wokwi (ESP32): importe `FASE3/wokwi/` no https://wokwi.com e inicie a simulação. Configurar `config.h` a partir de `config.example.h` com as credenciais do HiveMQ Cloud.
-- Node‑RED: importe `FASE3/node-red/flow-hivemq-cloud.json` (TLS 8883) e preencha usuário/senha; acesse `http://127.0.0.1:1880/ui`.
-- REST + E‑mail: siga `FASE3/ir-alem/README.md` para executar servidor e cliente.
+## Como executar o codigo (Fase 3)
+- Wokwi (ESP32): importe `FASE3/wokwi/` no https://wokwi.com e inicie a simulacao. Configure `config.h` a partir de `config.example.h` com as credenciais do HiveMQ Cloud.
+- Node-RED: importe `FASE3/node-red/flow-hivemq-cloud.json` (TLS 8883) e preencha usuario/senha; acesse `http://127.0.0.1:1880/ui`.
+- REST + E-mail: siga `FASE3/ir-alem/README.md` para executar servidor e cliente.
 - Notebook: abra `FASE3/notebooks/phase3_time_series.ipynb` no Jupyter.
 
-## Evidências
-
-Evidência de pub/sub MQTT (TLS 8883): ver `FASE3/reports/evidence_mqtt.txt`.
+## Evidencias
+- Pub/sub MQTT (TLS 8883): `FASE3/reports/evidence_mqtt.txt`.
 
 ## Documentos
-- Ver `document/README.md` para links dos relatórios (Parte 1, Parte 2, IR ALÉM 1 e 2) e evidências.
+- Ver `document/README.md` para links dos relatorios (Parte 1, Parte 2, IR ALEM 1 e 2) e evidencias.
 
-## Repositórios das Fases Anteriores
+## Repositorios das Fases Anteriores
+- Fase 1: https://github.com/FernandoSegregio/CardioIA (inacessivel no momento; copia local pendente em `FASES/Fase1/`)
+- Fase 2: https://github.com/Wellbrito29/CardioIA-diagnostic- (copia local em `FASES/Fase2/`)
 
-- Fase 1: https://github.com/FernandoSegregio/CardioIA (inacessível no momento; cópia local pendente em `FASES/Fase1/`)
-- Fase 2: https://github.com/Wellbrito29/CardioIA-diagnostic- (cópia local em `FASES/Fase2/`)
+## Fase 4 (Visao Computacional)
+- Guia da fase: `FASE4/README.md`
+- Notebook principal: `FASE4/notebooks/phase4_cv.ipynb` (pre-process + CNN simples + transfer learning)
+- Prototipo Flask: `FASE4/app/app.py` (usa `model.pt` exportado do notebook)
+- Relatorios, metricas e fairness: `FASE4/reports/` (inclui predict_example.json)
 
-## Histórico de lançamentos
-- 0.1.0 — 2025‑10‑24
-  - Entrega Fase 3 (ESP32+SPIFFS+MQTT TLS, Node‑RED, REST, Notebook) + evidências
+## Historico de lancamentos
+- 0.1.0 - 2025-10-24
+  - Entrega Fase 3 (ESP32+SPIFFS+MQTT TLS, Node-RED, REST, Notebook) + evidencias

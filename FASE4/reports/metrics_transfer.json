@@ -1,0 +1,67 @@
+{
+  "class_names": [
+    "NORMAL",
+    "PNEUMONIA"
+  ],
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.40339611828327177,
+      "train_acc": 0.8275,
+      "val_loss": 0.6291033029556274,
+      "val_acc": 0.5625
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.2488347464799881,
+      "train_acc": 0.90125,
+      "val_loss": 0.43844321370124817,
+      "val_acc": 0.75
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.20019979655742645,
+      "train_acc": 0.92625,
+      "val_loss": 0.3433864116668701,
+      "val_acc": 0.875
+    }
+  ],
+  "classification_report": {
+    "NORMAL": {
+      "precision": 0.875,
+      "recall": 0.875,
+      "f1-score": 0.875,
+      "support": 8.0
+    },
+    "PNEUMONIA": {
+      "precision": 0.875,
+      "recall": 0.875,
+      "f1-score": 0.875,
+      "support": 8.0
+    },
+    "accuracy": 0.875,
+    "macro avg": {
+      "precision": 0.875,
+      "recall": 0.875,
+      "f1-score": 0.875,
+      "support": 16.0
+    },
+    "weighted avg": {
+      "precision": 0.875,
+      "recall": 0.875,
+      "f1-score": 0.875,
+      "support": 16.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      7,
+      1
+    ],
+    [
+      1,
+      7
+    ]
+  ],
+  "note": "Transfer learning ResNet18 (weights=DEFAULT), subset train=800 val=16, epochs=3, img_size=(128, 128), bs=32"
+}
