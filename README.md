@@ -47,15 +47,25 @@ Grupo 15 (FIAP):
 
 Detalhes de colaboração e convenções: `CONTRIBUTORS.md`.
 
-## Funcionalidades
-- **Conversa (Watson ou Local)**: `POST /api/message`
-- **Organizar relato (GenAI + fallback local)**: `POST /api/clinical/extract`
-- **Triagem (reuso da Fase 2)**: `POST /api/phase2/triage`
-- **Monitoramento (RPA + dados híbridos)**:
-  - Ler logs: `GET /api/monitor/logs`
-  - Rodar 1 ciclo do robô: `POST /api/monitor/run_once`
-- **Vigilância de vitais (conceito Fase 3)**: `POST /api/phase3/vitals`
-- **Serviço de imagem (Fase 4, opcional)**: `GET /api/phase4/health`
+## O Que o Protótipo Faz
+- **Atendimento inicial por conversa**: acolhe, identifica intenção e conduz um fluxo simples (ex.: saudação, agendamento, sinais de alerta).
+- **Organização de informações clínicas**: a partir do relato do usuário, gera uma saída estruturada (JSON) e um resumo legível.
+- **Monitoramento e rastreabilidade**: simula um robô (RPA) que lê dados estruturados, detecta anomalias e registra eventos em logs.
+- **Extensões do projeto**:
+  - triagem reaproveitando a lógica da Fase 2
+  - avaliação de vitais seguindo a regra da Fase 3
+  - health-check de um serviço de imagem (Fase 4), quando disponível
+
+## API (Rotas Principais)
+| Recurso | Método | Rota |
+| --- | --- | --- |
+| Conversa | POST | `/api/message` |
+| Triagem (Fase 2) | POST | `/api/phase2/triage` |
+| Organizar relato (GenAI + fallback) | POST | `/api/clinical/extract` |
+| Monitoramento (logs) | GET | `/api/monitor/logs` |
+| Monitoramento (rodar 1 ciclo) | POST | `/api/monitor/run_once` |
+| Vitals (conceito Fase 3) | POST | `/api/phase3/vitals` |
+| Imagem (Fase 4, opcional) | GET | `/api/phase4/health` |
 
 ## Modos de Execução
 O sistema roda em 2 modos:
