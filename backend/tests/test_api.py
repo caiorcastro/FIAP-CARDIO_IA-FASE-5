@@ -43,3 +43,29 @@ def test_message_roundtrip_mock(client):
     data2 = res2.get_json()
     assert isinstance(data2.get("response"), str)
     assert data2["response"].strip() != ""
+
+
+def test_phase2_triage_endpoint(client):
+    res = client.post("/api/phase2/triage", json={"text": "Estou com dor no peito e falta de ar"})
+    assert res.status_code == 200
+    data = res.get_json()
+    assert isinstance(data.get("risk"), str)
+    assert "diagnosis" in data
+
+
+def test_clinical_extract_fallback_local(client, monkeypatch):
+    # Sem chave Gemini, deve funcionar com fallback local.
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    res = client.post("/api/clinical/extract", json={"text": "Minha pressao esta 150/95 e FC 88 bpm"})
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data.get("source") in ["local", "gemini"]
+    assert isinstance(data.get("structured"), dict)
+    assert "triage" in data
+
+
+def test_monitor_logs_endpoint_empty_ok(client):
+    res = client.get("/api/monitor/logs")
+    assert res.status_code == 200
+    data = res.get_json()
+    assert isinstance(data.get("logs"), list)

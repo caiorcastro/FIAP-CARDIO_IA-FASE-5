@@ -56,6 +56,39 @@ body {
   border-bottom: 1px solid var(--stroke);
 }
 
+.tabs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(0, 0, 0, 0.10);
+  overflow: auto;
+}
+
+.tab {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.92);
+  padding: 10px 12px;
+  border-radius: 999px;
+  font-weight: 850;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 120ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.tab:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.tab--active {
+  border-color: rgba(255, 59, 107, 0.35);
+  background: radial-gradient(120px 60px at 20% 0%, rgba(255, 59, 107, 0.22), transparent 70%),
+    rgba(255, 255, 255, 0.06);
+}
+
 .brand {
   display: flex;
   gap: 14px;
@@ -153,6 +186,223 @@ body {
   display: grid;
   grid-template-rows: 1fr auto;
   height: min(74vh, 760px);
+}
+
+.pane {
+  padding: 16px 16px 18px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: stretch;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  background: radial-gradient(1200px 360px at 20% 0%, rgba(255, 59, 107, 0.15), transparent 60%),
+    radial-gradient(900px 320px at 85% 20%, rgba(61, 220, 151, 0.10), transparent 60%),
+    rgba(255, 255, 255, 0.04);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.kicker {
+  display: inline-block;
+  font-weight: 900;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.heroText h2 {
+  margin: 8px 0 6px;
+  font-family: "Fraunces", serif;
+  font-size: 1.55rem;
+  letter-spacing: 0.2px;
+}
+
+.heroText p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.25rem;
+}
+
+.heroCard {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.18);
+  min-width: 220px;
+}
+
+.stat {
+  display: grid;
+  gap: 4px;
+}
+.statLabel {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 800;
+}
+.statValue {
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 18px;
+  padding: 14px 14px 12px;
+}
+
+.card h3 {
+  margin: 0 0 10px;
+  font-family: "Fraunces", serif;
+  font-size: 1.08rem;
+}
+
+.cardTop {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cardActions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.muted {
+  color: rgba(255, 255, 255, 0.70);
+}
+
+.small {
+  font-size: 0.85rem;
+}
+
+.input--tall {
+  min-height: 180px;
+}
+
+.alert {
+  margin-top: 10px;
+  border-radius: 14px;
+  padding: 10px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.20);
+}
+
+.alert--ok {
+  border-color: rgba(61, 220, 151, 0.25);
+  background: radial-gradient(260px 120px at 20% 0%, rgba(61, 220, 151, 0.12), transparent 70%),
+    rgba(0, 0, 0, 0.20);
+}
+
+.alert--bad {
+  border-color: rgba(255, 59, 107, 0.30);
+  background: radial-gradient(260px 120px at 20% 0%, rgba(255, 59, 107, 0.14), transparent 70%),
+    rgba(0, 0, 0, 0.20);
+}
+
+.subgrid {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.miniLabel {
+  font-weight: 900;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.82);
+  margin-bottom: 8px;
+}
+
+.logList {
+  display: grid;
+  gap: 10px;
+}
+
+.logItem {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.14);
+  border-radius: 16px;
+  padding: 12px 12px 10px;
+}
+
+.logTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.logTitle {
+  font-weight: 900;
+}
+
+.logMeta {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.85rem;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 0.78rem;
+  margin-bottom: 8px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.field span {
+  display: block;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.70);
+  margin-bottom: 6px;
+  font-weight: 850;
+}
+
+.text {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.92);
+  outline: none;
+  font-size: 0.96rem;
+}
+
+.text:focus {
+  border-color: rgba(61, 220, 151, 0.35);
+  box-shadow: 0 0 0 4px rgba(61, 220, 151, 0.10);
 }
 
 .messages {
@@ -297,6 +547,18 @@ body {
   }
   .top {
     align-items: flex-start;
+  }
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .heroCard {
+    min-width: 0;
+  }
+  .formGrid {
+    grid-template-columns: 1fr;
   }
 }
 

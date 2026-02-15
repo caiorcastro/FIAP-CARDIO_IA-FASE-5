@@ -6,6 +6,10 @@ Expandir o projeto para interpretar conteúdo clínico **não estruturado** (tex
 ## Implementação
 Notebook: `notebooks/genai_extraction.ipynb`
 
+Integração com o protótipo (Fase 5):
+- Endpoint: `POST /api/clinical/extract` (backend Flask)
+- Interface: aba **"Organizar relato"** (frontend React)
+
 Abordagem:
 1. Recebemos um texto clínico simulado (ex: relato do paciente).
 2. Aplicamos um prompt orientando o modelo a extrair campos relevantes.
@@ -35,4 +39,3 @@ jupyter notebook notebooks/genai_extraction.ipynb
 - Prompting: instruções claras, delimitação do texto e formato de saída explicitamente definido.
 - Governança: o protótipo simula um assistente e não substitui orientação médica.
 - Privacidade: o projeto usa dados fictícios/simulados.
-

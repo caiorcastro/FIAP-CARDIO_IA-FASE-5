@@ -60,26 +60,26 @@ Fluxo técnico:
 1. Configurar `.env` (ver `.env.example`)
 2. Rodar:
 ```bash
-cd backend
-pip install -r requirements.txt
-python app.py
+pip install -r backend/requirements.txt
+python run_server.py
 ```
 3. Abrir `http://127.0.0.1:5000`
+4. Na UI, usar as abas: **Conversa**, **Organizar relato**, **Monitoramento**, **Imagem (Fase 4)**.
 
 ## Conexão com as Fases Anteriores (2, 3 e 4)
 Esta fase **não é isolada**: ela consolida a evolução do CardioIA, transformando as peças técnicas anteriores em uma **experiência de atendimento ao paciente**.
 
 - **Fase 2 (IA & NLP / triagem e risco)**  
-  A Fase 5 reutiliza o mesmo objetivo central: entender linguagem natural e organizar sinais/sintomas para triagem inicial.  
-  Evidências: `FASES ANTERIORES/Fase2/README.md` e `FASES ANTERIORES/REPORT-DE-AVANÇO.MD`.
+  Reuso direto no backend: `backend/phase2_triage.py` chama `FASES ANTERIORES/Fase2/src/diagnose.py` para gerar `risk` e `diagnosis`.  
+  Isso aparece no protótipo via `POST /api/phase2/triage` e também dentro do "Organizar relato" (Ir Além 1) via `POST /api/clinical/extract`.
 
 - **Fase 3 (IoT & monitoramento contínuo)**  
-  A Fase 5 assume o contexto de monitoramento e alerta: o assistente conversa com o paciente *como porta de entrada* para sinais vitais e acompanhamento.  
-  Evidências: `FASES ANTERIORES/FASE3/README.md` e relatórios em `FASES ANTERIORES/FASE3/reports/`.
+  A regra de alerta (temperatura/bpm) foi reaproveitada e exposta em `POST /api/phase3/vitals` (ver `backend/phase3_vitals.py`).  
+  Na UI, isso aparece como "Simulador de vitais" na aba **Monitoramento**.
 
 - **Fase 4 (Visão computacional por imagem)**  
-  A Fase 5 complementa a experiência com orientação e encaminhamento: o paciente inicia pelo chat e pode ser direcionado ao módulo de imagem quando aplicável.  
-  Evidências: `FASES ANTERIORES/FASE4/README.md` e `FASES ANTERIORES/FASE4/reports/REPORT_PHASE4.md`.
+  A Fase 5 integra de forma opcional um health-check do serviço da Fase 4: `GET /api/phase4/health` (ver `backend/phase4_cv.py`).  
+  Quando `PHASE4_CV_URL` estiver configurada e o serviço estiver rodando, a UI mostra o status na aba **Imagem (Fase 4)**.
 
 Em resumo, a Fase 5 atua como “camada de interface e orquestração” para o que foi desenvolvido/planejado nas fases anteriores.
 

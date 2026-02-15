@@ -5,7 +5,12 @@ from typing import Any, Tuple
 
 from flask import Flask, jsonify, request, send_from_directory
 
+from backend.automation_adapter import AutomationAdapter
+from backend.clinical_extraction import ClinicalExtractionService
 from backend.mock_assistant import MockAssistantService
+from backend.phase2_triage import Phase2TriageService
+from backend.phase3_vitals import risk_check_local, try_post_phase3
+from backend.phase4_cv import try_get_phase4_health
 from backend.watson_service import WatsonService
 
 
@@ -47,6 +52,11 @@ def create_app() -> Flask:
     # Armazenamento simples de sessão em memória (para protótipo).
     # Em produção, usaria Redis ou banco de dados.
     app.config["user_sessions"] = {}
+
+    # Integracoes (fases anteriores + ir alem).
+    app.config["phase2_triage"] = Phase2TriageService()
+    app.config["clinical_extraction"] = ClinicalExtractionService()
+    app.config["automation"] = AutomationAdapter()
 
     @app.get("/api/status")
     def status():
@@ -158,6 +168,98 @@ def create_app() -> Flask:
                 "entities": response_data.get("entities") or [],
             }
         )
+
+    @app.post("/api/phase2/triage")
+    def phase2_triage():
+        data = request.get_json(silent=True) or {}
+        text = str(data.get("text") or data.get("message") or "")
+        if not text.strip():
+            return jsonify({"error": "Texto nao informado."}), 400
+
+        svc: Phase2TriageService = app.config["phase2_triage"]
+        triage = svc.triage(text.strip())
+        return jsonify(
+            {
+                "risk": triage.risk,
+                "diagnosis": triage.diagnosis,
+            }
+        )
+
+    @app.post("/api/clinical/extract")
+    def clinical_extract():
+        """
+        Ir Alem 1 (GenAI): extrai informacoes clinicas estruturadas a partir de texto livre.
+        - Se GEMINI_API_KEY estiver configurada, tenta Gemini.
+        - Se nao estiver, faz fallback local + triagem (Fase 2).
+        """
+        data = request.get_json(silent=True) or {}
+        text = str(data.get("text") or data.get("message") or "")
+        if not text.strip():
+            return jsonify({"error": "Texto nao informado."}), 400
+
+        svc: ClinicalExtractionService = app.config["clinical_extraction"]
+        result = svc.extract(text.strip())
+        return jsonify(
+            {
+                "source": result.source,
+                "summary": result.summary,
+                "structured": result.structured,
+                "triage": result.triage,
+            }
+        )
+
+    @app.get("/api/monitor/logs")
+    def monitor_logs():
+        """
+        Ir Alem 2: leitura dos logs gerados pelo robo (NoSQL em JSON).
+        """
+        adapter: AutomationAdapter = app.config["automation"]
+        return jsonify({"logs": adapter.read_logs()})
+
+    @app.post("/api/monitor/run_once")
+    def monitor_run_once():
+        """
+        Ir Alem 2: roda um ciclo do robo e retorna logs atualizados.
+        """
+        adapter: AutomationAdapter = app.config["automation"]
+        result = adapter.run_once()
+        return jsonify({**result, "logs": adapter.read_logs()})
+
+    @app.post("/api/phase3/vitals")
+    def phase3_vitals():
+        """
+        Reuso da Fase 3 (monitoramento continuo):
+        - Se PHASE3_ALERTS_URL estiver configurada e o servico estiver rodando, chama o endpoint externo.
+        - Caso contrario, aplica a regra local equivalente.
+        """
+        data = request.get_json(silent=True) or {}
+        temp = data.get("temp")
+        bpm = data.get("bpm")
+
+        # payload compativel com a Fase 3 (rest_alerts.py)
+        payload = {"ts": data.get("ts"), "temp": temp, "hum": data.get("hum"), "bpm": bpm}
+        external = try_post_phase3(payload)
+        if external is not None:
+            return jsonify({"source": "fase3_service", "result": external})
+
+        try:
+            temp_f = float(temp) if temp is not None else None
+        except Exception:
+            temp_f = None
+        try:
+            bpm_f = float(bpm) if bpm is not None else None
+        except Exception:
+            bpm_f = None
+
+        return jsonify({"source": "local_rules", "result": risk_check_local(temp_f, bpm_f)})
+
+    @app.get("/api/phase4/health")
+    def phase4_health():
+        """
+        Integracao opcional com a Fase 4 (CV): consulta /health do servico de visao.
+        """
+        health = try_get_phase4_health()
+        return jsonify({"available": health is not None, "health": health})
 
     return app
 

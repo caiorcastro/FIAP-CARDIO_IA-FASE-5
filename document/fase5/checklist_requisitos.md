@@ -35,6 +35,9 @@ Baseado em `enunciado-fase5.txt`.
   - Notebook: `notebooks/genai_extraction.ipynb`
 - Extrair infos relevantes e estruturar saída (JSON)
   - Exemplo e parsing: `notebooks/genai_extraction.ipynb`
+- Conexão com o protótipo (Fase 5)
+  - Endpoint: `POST /api/clinical/extract` (`backend/app.py` + `backend/clinical_extraction.py`)
+  - UI: aba "Organizar relato" (`frontend/src/ui/App.tsx`)
 - Entregáveis
   - Notebook/código: `notebooks/genai_extraction.ipynb`
   - Documento PDF explicando fluxo: `document/fase5/ir-alem-1_extracao_clinica.md` (e PDF)
@@ -52,3 +55,7 @@ Baseado em `enunciado-fase5.txt`.
   - Código automação: `automation/`
   - Estruturas dos bancos: `automation/database_setup.py` e `automation/rpa_monitor.py`
   - Relatório técnico: `document/fase5/ir-alem-2_rpa_dados_hibridos.md` (e PDF)
+- Conexão com o protótipo (Fase 5)
+  - Ler logs: `GET /api/monitor/logs`
+  - Rodar 1 ciclo do robô: `POST /api/monitor/run_once`
+  - UI: aba "Monitoramento" (`frontend/src/ui/App.tsx`)

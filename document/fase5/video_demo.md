@@ -10,10 +10,13 @@
    - Saudação
    - Agendamento (perguntar data e confirmar)
    - Emergência (dor no peito -> pergunta -> orientação)
-5. Evidência “viva” (opcional, mas forte para banca):
+5. Mostrar "Ir Além" integrado na UI (rápido):
+   - Aba **Organizar relato**: colar um texto e mostrar o JSON (Ir Além 1)
+   - Aba **Monitoramento**: atualizar logs e rodar 1 ciclo do robô (Ir Além 2)
+6. Evidência “viva” (opcional, mas forte para banca):
    - Rodar `python scripts/watson_generate_evidence.py`
    - Abrir `document/fase5/evidencias/watson_smoke_test.json` (sem segredos)
-6. (Opcional) Rodar o RPA:
+7. (Opcional) Rodar o RPA:
    - `python automation/database_setup.py`
    - `python automation/rpa_monitor.py`
    - Mostrar `automation/data/logs.json`

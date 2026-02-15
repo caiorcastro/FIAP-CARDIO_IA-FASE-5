@@ -6,7 +6,7 @@ Entrega acadêmica FIAP (Cap 1) baseada no enunciado em `enunciado-fase5.txt`.
 
 Esta fase evolui o CardioIA para um **assistente conversacional** capaz de interagir em linguagem natural, organizar **informações clínicas** e integrar **NLP + automação + APIs + dados**.
 
-Aviso: este protótipo **não substitui orientação médica**. Em caso de emergência, **ligue 192 (SAMU)**.
+Observação: este é um **protótipo acadêmico** para fins didáticos (FIAP).
 
 ## Links Rápidos
 - Checklist requisito -> evidência: `document/fase5/checklist_requisitos.md`
@@ -23,11 +23,18 @@ Aviso: este protótipo **não substitui orientação médica**. Em caso de emerg
   - Interface web (React) integrada ao backend
   - Roteiro + campo para link do vídeo: `document/fase5/video_demo.md`
 - **Ir Além 1 (GenAI)**:
-  - Extração de informações clínicas de texto livre e saída estruturada (JSON)
+  - Extração de informações clínicas de texto livre e saída estruturada (JSON) integrada ao protótipo
   - Notebook + documento PDF em `document/fase5/ir-alem-1_extracao_clinica.pdf`
 - **Ir Além 2 (RPA + Dados Híbridos)**:
   - Robô que lê dados relacionais (SQLite), detecta anomalias e registra logs em JSON (NoSQL)
   - Documento PDF em `document/fase5/ir-alem-2_rpa_dados_hibridos.pdf`
+
+## O Que Funciona no Protótipo (Na Prática)
+- **Conversa (Watson ou Local)**: chat na UI + `POST /api/message`
+- **Organizar relato (Ir Além 1)**: UI "Organizar relato" + `POST /api/clinical/extract`
+- **Triagem (Fase 2 reaproveitada)**: embutida no "Organizar relato" + `POST /api/phase2/triage`
+- **Monitoramento (Ir Além 2 + conceito Fase 3)**: UI "Monitoramento" + `GET /api/monitor/logs` e `POST /api/monitor/run_once`
+- **Imagem (Fase 4, opcional)**: UI "Imagem (Fase 4)" + `GET /api/phase4/health`
 
 ## Requisitos do Enunciado (Parte 1 e Parte 2)
 Checklist completo: `document/fase5/checklist_requisitos.md`.
@@ -56,15 +63,15 @@ No vídeo, a recomendação é mostrar os dois: primeiro WATSON (publicado), dep
 ### Visão Geral
 ```mermaid
 flowchart LR
-  U[Usuário] -->|mensagem| UI[Web Chat: frontend/]
-  UI -->|POST /api/message| API[Flask: backend/app.py]
-  API -->|SDK V2| W[IBM Watson Assistant]
+  U["Usuario"] -->|"mensagem"| UI["Web (React): frontend/"]
+  UI -->|"POST /api/message"| API["Flask: backend/app.py"]
+  API -->|"SDK V2"| W["IBM Watson Assistant"]
   W --> API --> UI --> U
 
-  subgraph Automação (Ir Além 2)
-    DB[(SQLite: automation/data/patients.db)] --> RPA[Robot: automation/rpa_monitor.py]
-    RPA -->|logs| LOG[(JSON: automation/data/logs.json)]
-    RPA -->|opcional| G[Google Gemini]
+  subgraph RPA["Automacao (Ir Alem 2): RPA + Dados hibridos"]
+    DB["SQLite: automation/data/patients.db"] --> BOT["Robot: automation/rpa_monitor.py"]
+    BOT -->|"logs"| LOG["JSON (NoSQL): automation/data/logs.json"]
+    BOT -->|"opcional"| G["Google Gemini"]
   end
 ```
 
@@ -110,11 +117,15 @@ Variáveis:
 - `WATSON_API_KEY`: API key das Service Credentials
 - `WATSON_URL`: URL da instância (normalmente `.../instances/<id>`)
 - `WATSON_ASSISTANT_ID`: ID do Assistant publicado
-- `WATSON_ENVIRONMENT_ID`: Environment ID (GUID). Em algumas contas acadêmicas, ele pode coincidir com o próprio `WATSON_ASSISTANT_ID`.
+- `WATSON_ENVIRONMENT_ID`: Environment ID (GUID).
+  - Onde pegar: no Watson Assistant, abra o seu assistant -> **Environments** -> selecione **Live** (ou Draft) -> copie o **Environment ID**.
 - `ASSISTANT_ID`: compatibilidade (opcional). Se preenchido, o backend usa esse valor como assistant/environment quando você não quiser separar as variáveis.
-- `GEMINI_API_KEY`: chave do Gemini (opcional para RPA/Ir Além)
+- `GEMINI_API_KEY`: chave do Gemini (opcional)
+- `GEMINI_MODEL`: opcional (o backend tenta alguns nomes comuns e faz fallback para extração local)
 - `CARDIOIA_ASSISTANT_MODE`: `watson` (padrão) ou `local` (offline)
 - `WATSON_CONSOLE_URL`: opcional (aparece no botão “Watson IBM” da UI para abrir o seu projeto no console)
+- `PHASE3_ALERTS_URL`: opcional (se você subir o serviço de alertas da Fase 3, a Fase 5 consegue chamá-lo)
+- `PHASE4_CV_URL`: opcional (se você subir o serviço da Fase 4, a Fase 5 detecta via `/health`)
 
 ## Como Rodar
 
@@ -124,6 +135,12 @@ pip install -r backend/requirements.txt
 python run_server.py
 ```
 Abra: `http://127.0.0.1:5000`
+
+Na interface, use as abas:
+- **Conversa** (Parte 1 e Parte 2)
+- **Organizar relato** (Ir Além 1 + Fase 2)
+- **Monitoramento** (Ir Além 2 + conceito Fase 3)
+- **Imagem (Fase 4)** (opcional)
 
 Opcional (para editar o frontend):
 ```powershell
@@ -163,14 +180,14 @@ Consulte:
 - `document/fase5/checklist_requisitos.md`
 
 ## Evolução do CardioIA (Fases 2, 3 e 4 -> Fase 5)
-Esta entrega é uma **evolução** das fases anteriores: a Fase 5 consolida a “porta de entrada” do paciente (conversa + triagem + encaminhamento).
+Esta entrega é uma **evolução** das fases anteriores: a Fase 5 consolida a “porta de entrada” do paciente (conversa + triagem + encaminhamento) e passa a **usar** módulos/conceitos anteriores como parte do fluxo do protótipo.
 
 - **Fase 2 (NLP + triagem / risco)**  
-  Base do raciocínio clínico inicial e organização de sintomas. Evidências em `FASES ANTERIORES/Fase2/`.
+  Reuso direto no backend (triagem do texto do paciente): `backend/phase2_triage.py` chamando `FASES ANTERIORES/Fase2/src/diagnose.py`.
 - **Fase 3 (IoT + monitoramento contínuo)**  
-  Contexto de sinais vitais e alertas em tempo real. Evidências em `FASES ANTERIORES/FASE3/`.
+  Regra de alerta (bpm/temp) reaproveitada e exposta em `POST /api/phase3/vitals` (ver `backend/phase3_vitals.py`).
 - **Fase 4 (Visão computacional)**  
-  Módulo de apoio ao diagnóstico por imagem (quando aplicável). Evidências em `FASES ANTERIORES/FASE4/`.
+  Integração opcional como serviço externo (health-check em `GET /api/phase4/health`).
 
 Mapa detalhado (arquivo por arquivo): `document/fase5/mapa_repositorio.md`.
 
@@ -188,7 +205,17 @@ timeline
 ```
 
 ## Equipe
-Grupo 15 (FIAP): ver `CONTRIBUTORS.md`.
+Grupo 15 (FIAP):
+
+| Integrante | Contato |
+| --- | --- |
+| Caio Rodrigues Castro | caiorcastro@gmail.com |
+| Felipe Soares Nascimento | consultor.casteliano@gmail.com |
+| Fernando Miranda Segregio | segregio@gmail.com |
+| Mario Roberto Silva de Almeida | marioalmeida1980@gmail.com |
+| Wellington Nascimento de Brito | well334@hotmail.com |
+
+Detalhes de colaboração e convenções: `CONTRIBUTORS.md`.
 
 ## Evidências do Watson “vivo” (para a banca)
 Mesmo com limitações de alguns planos/contas no Watson (endpoints administrativos podem retornar 404), a evidência principal é a conversa real via API:
