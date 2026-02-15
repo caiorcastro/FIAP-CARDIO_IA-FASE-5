@@ -1,7 +1,12 @@
-# ![FIAP - Faculdade de Informática e Administração Paulista](https://raichu-uploads.s3.amazonaws.com/logo_fiap-faculdade-de-informatica-e-administracao-paulista_307U7P.png)
-
-# FIAP - Faculdade de Informática e Administração Paulista
-[fiap.com.br](https://www.fiap.com.br/)
+<p align="center">
+  <a href="https://www.fiap.com.br/">
+    <img src="assets/fiap-logo.png" alt="FIAP - Faculdade de Informática e Administração Paulista" height="72" />
+  </a>
+</p>
+<p align="center">
+  <strong>FIAP - Faculdade de Informática e Administração Paulista</strong><br/>
+  <a href="https://www.fiap.com.br/">fiap.com.br</a>
+</p>
 
 # CardioIA - Fase 5: Assistente Cardiológico Inteligente (Experiência do Paciente)
 
