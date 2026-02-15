@@ -14,12 +14,38 @@
 
 Protótipo conversacional capaz de interagir em linguagem natural, organizar informações clínicas e integrar NLP + automação + APIs + dados.
 
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white" />
+  <img alt="Flask" src="https://img.shields.io/badge/Flask-API-000000?logo=flask&logoColor=white" />
+  <img alt="React" src="https://img.shields.io/badge/React-UI-61DAFB?logo=react&logoColor=0B1220" />
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-Build-646CFF?logo=vite&logoColor=white" />
+  <img alt="Watson Assistant" src="https://img.shields.io/badge/IBM%20Watson-Assistant-1261FE?logo=ibm&logoColor=white" />
+  <img alt="Gemini" src="https://img.shields.io/badge/Google-Gemini-4285F4?logo=google&logoColor=white" />
+  <img alt="SQLite" src="https://img.shields.io/badge/SQLite-Relacional-003B57?logo=sqlite&logoColor=white" />
+  <img alt="JSON" src="https://img.shields.io/badge/JSON-Logs-111111?logo=json&logoColor=white" />
+  <img alt="pytest" src="https://img.shields.io/badge/pytest-Testes-0A9EDC?logo=pytest&logoColor=white" />
+  <img alt="Mermaid" src="https://img.shields.io/badge/Mermaid-Diagramas-FF3670?logo=mermaid&logoColor=white" />
+</p>
+
 ## Visão Geral
 O CardioIA (Fase 5) concentra a experiência do paciente em um único fluxo:
 - conversa (Watson ou Local)
 - triagem e organização de relato clínico (com saída estruturada em JSON)
 - monitoramento com automação (RPA) e rastreabilidade por logs
 - ponto de extensão para serviço de análise por imagem (opcional)
+
+## Equipe
+Grupo 15 (FIAP):
+
+| Integrante | Contato |
+| --- | --- |
+| Caio Rodrigues Castro | caiorcastro@gmail.com |
+| Felipe Soares Nascimento | consultor.casteliano@gmail.com |
+| Fernando Miranda Segregio | segregio@gmail.com |
+| Mario Roberto Silva de Almeida | marioalmeida1980@gmail.com |
+| Wellington Nascimento de Brito | well334@hotmail.com |
+
+Detalhes de colaboração e convenções: `CONTRIBUTORS.md`.
 
 ## Funcionalidades
 - **Conversa (Watson ou Local)**: `POST /api/message`
@@ -160,8 +186,19 @@ python -m pytest
 - Export do assistente (modelo clássico): `watson_skill_export.json`
 - Mapa do repositório (arquivo por arquivo): `document/fase5/mapa_repositorio.md`
 
-## Evolução do CardioIA (Fases 2, 3 e 4 -> Fase 5)
-A Fase 5 consolida a “porta de entrada” do paciente (conversa + triagem + encaminhamento) e passa a usar módulos/conceitos anteriores como parte do fluxo do protótipo.
+## Watson (Integração Publicada) e Evidências Técnicas
+- Smoke test (sem segredos): `document/fase5/evidencias/watson_smoke_test.json`
+- Script que gera o smoke test: `scripts/watson_generate_evidence.py`
+- Espelhamento (Watson Actions vs export clássico): `document/fase5/evidencias/espelhamento_watson.md`
+
+## Documentos via navegador
+O backend também serve documentação local:
+- `/docs/fase5/...` (ex: `/docs/fase5/relatorio_conversacional.pdf`)
+- `/docs/anteriores/...` (ex: `/docs/anteriores/REPORT-DE-AVAN%C3%87O.MD`)
+- `/docs/root/...` (ex: `/docs/root/CONTRIBUTORS.md`)
+
+## Apêndice: Evolução e Fases Anteriores
+A Fase 5 consolida a “porta de entrada” do paciente (conversa + triagem + encaminhamento) e reaproveita módulos/conceitos anteriores como parte do fluxo do protótipo.
 
 - **Fase 2 (NLP + triagem / risco)**  
   Reuso direto no backend (triagem do texto do paciente): `backend/phase2_triage.py` chamando `FASES ANTERIORES/Fase2/src/diagnose.py`.
@@ -170,10 +207,8 @@ A Fase 5 consolida a “porta de entrada” do paciente (conversa + triagem + en
 - **Fase 4 (Visão computacional)**  
   Integração opcional como serviço externo (health-check em `GET /api/phase4/health`).
 
-Mapa detalhado (arquivo por arquivo): `document/fase5/mapa_repositorio.md`.
-
-## Fases Anteriores (Histórico)
-As fases anteriores estão organizadas em `FASES ANTERIORES/` para manter histórico e rastreabilidade.
+Histórico completo:
+- `FASES ANTERIORES/`
 
 ```mermaid
 timeline
@@ -185,26 +220,12 @@ timeline
   Fase 5 : Assistente conversacional + GenAI + RPA
 ```
 
-## Equipe
-Grupo 15 (FIAP):
+---
 
-| Integrante | Contato |
-| --- | --- |
-| Caio Rodrigues Castro | caiorcastro@gmail.com |
-| Felipe Soares Nascimento | consultor.casteliano@gmail.com |
-| Fernando Miranda Segregio | segregio@gmail.com |
-| Mario Roberto Silva de Almeida | marioalmeida1980@gmail.com |
-| Wellington Nascimento de Brito | well334@hotmail.com |
-
-Detalhes de colaboração e convenções: `CONTRIBUTORS.md`.
-
-## Watson (Integração Publicada) e Evidências Técnicas
-- Smoke test (sem segredos): `document/fase5/evidencias/watson_smoke_test.json`
-- Script que gera o smoke test: `scripts/watson_generate_evidence.py`
-- Espelhamento (Watson Actions vs export clássico): `document/fase5/evidencias/espelhamento_watson.md`
-
-## Documentos via navegador
-O backend também serve documentação local:
-- `/docs/fase5/...` (ex: `/docs/fase5/relatorio_conversacional.pdf`)
-- `/docs/anteriores/...` (ex: `/docs/anteriores/REPORT-DE-AVAN%C3%87O.MD`)
-- `/docs/root/...` (ex: `/docs/root/CONTRIBUTORS.md`)
+<p align="center">
+  <strong>CardioIA (Fase 5)</strong><br/>
+  <a href="document/fase5/README.md">documentação</a> •
+  <a href="document/fase5/checklist_requisitos.md">checklist</a> •
+  <a href="watson_skill_export.json">export do assistente</a> •
+  <a href="CONTRIBUTORS.md">colaboradores</a>
+</p>
