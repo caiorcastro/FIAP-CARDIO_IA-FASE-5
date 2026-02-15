@@ -1,62 +1,35 @@
+# ![FIAP - Faculdade de Informática e Administração Paulista](https://raichu-uploads.s3.amazonaws.com/logo_fiap-faculdade-de-informatica-e-administracao-paulista_307U7P.png)
+
+# FIAP - Faculdade de Informática e Administração Paulista
+[fiap.com.br](https://www.fiap.com.br/)
+
 # CardioIA - Fase 5: Assistente Cardiológico Inteligente (Experiência do Paciente)
 
 ![CardioIA - Fase 5](document/fase5/assets/banner.svg)
 
-Entrega acadêmica FIAP (Cap 1) baseada no enunciado em `enunciado-fase5.txt`.
+Protótipo conversacional capaz de interagir em linguagem natural, organizar informações clínicas e integrar NLP + automação + APIs + dados.
 
-Esta fase evolui o CardioIA para um **assistente conversacional** capaz de interagir em linguagem natural, organizar **informações clínicas** e integrar **NLP + automação + APIs + dados**.
+## Visão Geral
+O CardioIA (Fase 5) concentra a experiência do paciente em um único fluxo:
+- conversa (Watson ou Local)
+- triagem e organização de relato clínico (com saída estruturada em JSON)
+- monitoramento com automação (RPA) e rastreabilidade por logs
+- ponto de extensão para serviço de análise por imagem (opcional)
 
-Observação: este é um **protótipo acadêmico** para fins didáticos (FIAP).
+## Funcionalidades
+- **Conversa (Watson ou Local)**: `POST /api/message`
+- **Organizar relato (GenAI + fallback local)**: `POST /api/clinical/extract`
+- **Triagem (reuso da Fase 2)**: `POST /api/phase2/triage`
+- **Monitoramento (RPA + dados híbridos)**:
+  - Ler logs: `GET /api/monitor/logs`
+  - Rodar 1 ciclo do robô: `POST /api/monitor/run_once`
+- **Vigilância de vitais (conceito Fase 3)**: `POST /api/phase3/vitals`
+- **Serviço de imagem (Fase 4, opcional)**: `GET /api/phase4/health`
 
-## Links Rápidos
-- Checklist requisito -> evidência: `document/fase5/checklist_requisitos.md`
-- Relatórios (MD + PDF): `document/fase5/README.md`
-- Export (evidência) do assistente (modelo clássico): `watson_skill_export.json`
-- Mapa do repositório (arquivo por arquivo): `document/fase5/mapa_repositorio.md`
-
-## O Que Foi Entregue (Resumo)
-- **Parte 1 (Watson + NLP)**:
-  - Modelagem do assistente no Watson Assistant e export (intents/entities/dialog nodes)
-  - Integração via backend Flask (API)
-  - Relatório curto (1-2 páginas) em `document/fase5/relatorio_conversacional.pdf`
-- **Parte 2 (Interface)**:
-  - Interface web (React) integrada ao backend
-  - Roteiro + campo para link do vídeo: `document/fase5/video_demo.md`
-- **Ir Além 1 (GenAI)**:
-  - Extração de informações clínicas de texto livre e saída estruturada (JSON) integrada ao protótipo
-  - Notebook + documento PDF em `document/fase5/ir-alem-1_extracao_clinica.pdf`
-- **Ir Além 2 (RPA + Dados Híbridos)**:
-  - Robô que lê dados relacionais (SQLite), detecta anomalias e registra logs em JSON (NoSQL)
-  - Documento PDF em `document/fase5/ir-alem-2_rpa_dados_hibridos.pdf`
-
-## O Que Funciona no Protótipo (Na Prática)
-- **Conversa (Watson ou Local)**: chat na UI + `POST /api/message`
-- **Organizar relato (Ir Além 1)**: UI "Organizar relato" + `POST /api/clinical/extract`
-- **Triagem (Fase 2 reaproveitada)**: embutida no "Organizar relato" + `POST /api/phase2/triage`
-- **Monitoramento (Ir Além 2 + conceito Fase 3)**: UI "Monitoramento" + `GET /api/monitor/logs` e `POST /api/monitor/run_once`
-- **Imagem (Fase 4, opcional)**: UI "Imagem (Fase 4)" + `GET /api/phase4/health`
-
-## Requisitos do Enunciado (Parte 1 e Parte 2)
-Checklist completo: `document/fase5/checklist_requisitos.md`.
-
-Parte 1 (Watson + NLP):
-- Assistente conversacional usando IBM Watson Assistant: `backend/watson_service.py` + evidência `document/fase5/evidencias/watson_smoke_test.json`
-- Modelagem (intents/entities/dialog nodes) como entregável acadêmico: `watson_skill_export.json`
-- Fluxo coerente + fallback + exceções básicas: `watson_skill_export.json` + `backend/app.py` + `backend/mock_assistant.py`
-- Integração via API (Flask): `backend/app.py` (`POST /api/message`)
-- Relatório curto (1-2 páginas): `document/fase5/relatorio_conversacional.pdf`
-
-Parte 2 (Interface):
-- Interface web integrada ao backend: `frontend/` (build em `backend/static/`)
-- Enviar mensagens e visualizar respostas: UI + `POST /api/message`
-- Organização do projeto (boas práticas + estrutura): `document/fase5/mapa_repositorio.md`
-
-## Modos de Execução (Por que existe “LOCAL”)
-Para a banca conseguir testar sem depender de credenciais, o sistema roda em 2 modos:
+## Modos de Execução
+O sistema roda em 2 modos:
 - **WATSON**: usa o assistente publicado no IBM Watson Assistant (API V2).
 - **LOCAL (offline)**: simula o fluxo conversacional usando `watson_skill_export.json` (intents/entities/dialog nodes) via `backend/mock_assistant.py`.
-
-No vídeo, a recomendação é mostrar os dois: primeiro WATSON (publicado), depois LOCAL (fallback).
 
 ## Arquitetura (Fase 5)
 
@@ -92,12 +65,12 @@ sequenceDiagram
   UI-->>User: Renderiza resposta
 ```
 
-## Estrutura do Repositório (Entrega Atual)
+## Estrutura do Repositório
 - `frontend/`: interface web (React + Vite)
 - `backend/`: Flask + integração Watson + modo local (offline)
 - `automation/`: RPA + SQLite + logs JSON
 - `notebooks/`: notebook de GenAI (Ir Além 1)
-- `document/fase5/`: relatórios exigidos (MD + PDF) + checklist
+- `document/fase5/`: documentação e relatórios (MD + PDF)
 - `FASES ANTERIORES/`: histórico das fases anteriores
 - `.env`: arquivo local (não versionado) com credenciais
 
@@ -137,9 +110,9 @@ python run_server.py
 Abra: `http://127.0.0.1:5000`
 
 Na interface, use as abas:
-- **Conversa** (Parte 1 e Parte 2)
-- **Organizar relato** (Ir Além 1 + Fase 2)
-- **Monitoramento** (Ir Além 2 + conceito Fase 3)
+- **Conversa**
+- **Organizar relato**
+- **Monitoramento**
 - **Imagem (Fase 4)** (opcional)
 
 Opcional (para editar o frontend):
@@ -175,12 +148,15 @@ jupyter notebook notebooks/genai_extraction.ipynb
 python -m pytest
 ```
 
-## Como Atendemos o Enunciado (Ponto a Ponto)
-Consulte:
-- `document/fase5/checklist_requisitos.md`
+## Documentação
+- Checklist: `document/fase5/checklist_requisitos.md`
+- Relatórios (MD + PDF): `document/fase5/README.md`
+- Relatório curto (1-2 páginas): `document/fase5/relatorio_conversacional.pdf`
+- Export do assistente (modelo clássico): `watson_skill_export.json`
+- Mapa do repositório (arquivo por arquivo): `document/fase5/mapa_repositorio.md`
 
 ## Evolução do CardioIA (Fases 2, 3 e 4 -> Fase 5)
-Esta entrega é uma **evolução** das fases anteriores: a Fase 5 consolida a “porta de entrada” do paciente (conversa + triagem + encaminhamento) e passa a **usar** módulos/conceitos anteriores como parte do fluxo do protótipo.
+A Fase 5 consolida a “porta de entrada” do paciente (conversa + triagem + encaminhamento) e passa a usar módulos/conceitos anteriores como parte do fluxo do protótipo.
 
 - **Fase 2 (NLP + triagem / risco)**  
   Reuso direto no backend (triagem do texto do paciente): `backend/phase2_triage.py` chamando `FASES ANTERIORES/Fase2/src/diagnose.py`.
@@ -217,14 +193,13 @@ Grupo 15 (FIAP):
 
 Detalhes de colaboração e convenções: `CONTRIBUTORS.md`.
 
-## Evidências do Watson “vivo” (para a banca)
-Mesmo com limitações de alguns planos/contas no Watson (endpoints administrativos podem retornar 404), a evidência principal é a conversa real via API:
-- Script (gera evidência sem segredos): `scripts/watson_generate_evidence.py`
-- Resultado: `document/fase5/evidencias/watson_smoke_test.json`
-- Explicação do espelhamento (Watson vivo x export clássico): `document/fase5/evidencias/espelhamento_watson.md`
+## Watson (Integração Publicada) e Evidências Técnicas
+- Smoke test (sem segredos): `document/fase5/evidencias/watson_smoke_test.json`
+- Script que gera o smoke test: `scripts/watson_generate_evidence.py`
+- Espelhamento (Watson Actions vs export clássico): `document/fase5/evidencias/espelhamento_watson.md`
 
-## Documentação no navegador (para o vídeo)
-O backend também serve documentação local para facilitar a demonstração:
+## Documentos via navegador
+O backend também serve documentação local:
 - `/docs/fase5/...` (ex: `/docs/fase5/relatorio_conversacional.pdf`)
 - `/docs/anteriores/...` (ex: `/docs/anteriores/REPORT-DE-AVAN%C3%87O.MD`)
 - `/docs/root/...` (ex: `/docs/root/CONTRIBUTORS.md`)
