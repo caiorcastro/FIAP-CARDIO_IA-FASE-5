@@ -1,0 +1,196 @@
+PerfilSua imagem de perfil
+
+
+
+Voltar à lista
+Fase 5 - Conectando Mundos: IA Multimodal em Aplicações
+
+Cap 1 - Assistente Cardiológico Inteligente: Experiência do Paciente
+
+Atividade em grupo
+Cap 1 - Assistente Cardiológico Inteligente: Experiência do Paciente
+ de 09/02/2026 a 25/03/2026
+Entrega pendente
+Atividades entregues até 3 dias após o prazo receberão até 70% da nota.
+O cálculo é feito automaticamente pelo sistema, o professor não tem controle sobre o percentual da nota atribuída.
+Introdução
+ATIVIDADE – FASE 5: Assistente Cardiológico Inteligente: Experiência do Paciente
+
+    
+
+ 
+
+ 
+
+Enunciado de Atividade:
+
+Dando continuidade ao projeto CardioIA, nesta Fase 5 avançamos para a construção de um Assistente Cardiológico Inteligente e Conversacional, capaz de interagir com o paciente, interpretar informações clínicas e apresentar respostas organizadas e contextualizadas.
+
+Após explorarmos monitoramento, análise de imagens e prototipação visual em fases anteriores, o foco agora se desloca para a comunicação inteligente usando processamento natural da linguagem. Nesse contexto, os conhecimentos trabalhados nas disciplinas, especialmente de Processamento de Linguagem Natural, Chatbots & Virtual Agents – PCV, continuam a se integrar de forma contínua.
+
+Por exemplo, sabe-se que técnicas de processamento de linguagem natural apoiam a compreensão das mensagens do usuário; os conceitos de automação permitem organizar fluxos de atendimento e resposta; o uso de APIs e serviços facilitam a comunicação entre sistemas; e os fundamentos de bancos de dados sustentam o armazenamento e a recuperação das informações.
+
+E ainda, conteúdos relacionados à IA Generativa, métricas, governança e boas práticas contribuem para tornar o assistente mais consistente, organizado e alinhado a princípios éticos e técnicos.
+
+Portanto, o objetivo deste projeto é simular um assistente que auxilie o paciente no entendimento de informações de saúde, respeitando limites técnicos, éticos e conceituais discutidos ao longo da fase, utilizando exclusivamente abordagens, ferramentas e exemplos apresentados no material didático.
+
+Para contextualizar a evolução do projeto, observe no mapa mental a seguir em que ponto o CardioIA se encontra nesta Fase 5 e como os conhecimentos adquiridos nas fases anteriores sustentam esta etapa.
+
+   
+
+
+
+     
+
+Objetivo geral dessa atividade:
+
+Construir um protótipo funcional de Assistente Cardiológico Conversacional (Chatbot) que:
+
+Interaja com o usuário por meio de linguagem natural, simulando um atendimento inicial em saúde.
+Integre serviços de NLP e automação conforme apresentado nas aulas.
+Organize e apresente informações clínicas de forma estruturada e compreensível.
+Utilize uma interface simples para interação com o usuário.
+Trabalho em equipe e colaboração interdisciplinar – recomendamos o desenvolvimento do projeto em grupo de 4 a 5 integrantes, estimulando habilidades de comunicação, cooperação e divisão equilibrada de tarefas. O trabalho em equipe é considerado uma soft skill essencial para o ambiente profissional e acadêmico, e será concedido 1 ponto extra para as equipes que se organizarem dentro dessa estrutura recomendada.
+
+Ao final desta fase, a equipe terá desenvolvido uma solução prática que demonstra como agentes conversacionais podem ser aplicados em contextos de saúde digital, respeitando boas práticas técnicas e conceituais.
+
+  
+
+Dica: para reforçar a importância da colaboração e entender boas práticas de trabalho em equipe, recomendamos assistir ao curso da Alura “Princípios do trabalho em equipe, relações colaborativas”, disponível na plataforma da Alura: <https://www.alura.com.br/curso-online-principios-trabalho-equipe-relacao-colaborativa>.
+
+   
+
+Atividade detalhada:
+
+PARTE 1 – Assistente Conversacional com NLP
+
+Desenvolver um assistente conversacional utilizando os conceitos estudados em aula, adotando como base a plataforma IBM Watson Assistant, conforme apresentado na disciplina PCV.
+Modelar o assistente no Watson Assistant, definindo intents, entities e dialog nodes, com foco em um fluxo de atendimento inicial no contexto de saúde.
+Criar um fluxo de diálogo coerente, com intenções bem definidas, respostas contextualizadas e tratamento básico de exceções.
+Integrar o assistente desenvolvido no Watson Assistant a uma aplicação backend simples (exemplo: Flask), utilizando a API do serviço para permitir a troca de mensagens entre usuário e sistema.
+Utilizar exemplos, arquiteturas e estruturas demonstradas no material didático das disciplinas como referência para a implementação.
+Entregáveis:
+
+Código-fonte do backend (Python).
+Arquivo de configuração/exportação do assistente (exemplo: JSON).
+Relatório curto (de uma a duas páginas) explicando o funcionamento do fluxo conversacional.
+ 
+
+PARTE 2 – Interface de Interação com o Usuário
+
+Criar uma interface simples para interação com o assistente (HTML ou aplicação básica em React Native).
+Permitir que o usuário envie mensagens e visualize as respostas do assistente.
+Organizar o projeto seguindo a estrutura e boas práticas vistas em aula.
+Entregáveis:
+
+Interface funcional integrada ao backend.
+Repositório GitHub público com o projeto organizado.
+Vídeo curto (até 3 minutos) demonstrando o funcionamento da interação.
+ 
+
+Critérios de Avaliação (10 pontos totais):
+
+Critério
+
+Pontos
+
+Implementação do fluxo conversacional
+
+3
+
+Integração correta entre backend e assistente
+
+2
+
+Interface funcional de interação
+
+2
+
+Organização e clareza do código
+
+2
+
+Documentação da solução
+
+1
+
+Trabalho em equipe e formação de grupos como recomendado
+
+1 (Extra)
+
+    
+
+IR ALÉM 1 – IA Generativa e Extração de Informações Clínicas
+
+Objetivo: expandir o assistente para interpretar conteúdos clínicos não estruturados utilizando modelos de linguagem, conforme estudado na disciplina.
+
+Utilizar técnicas de prompting e IA Generativa apresentadas em aula.
+Extrair informações relevantes de textos ou imagens simuladas.
+Organizar a saída em formato estruturado (exemplo: JSON).
+Entregáveis:
+
+Notebook ou código em Python com a implementação.
+Documento em PDF com todas as explicações do fluxo utilizado no projeto.
+Critérios de Avaliação:
+
+Uso correto das técnicas vistas em aula.
+Estruturação adequada da saída.
+Clareza na explicação do processo.
+  
+
+IR ALÉM 2 – Automação Inteligente com RPA, IA e Dados Híbridos
+
+Objetivo: expandir o Assistente Cardiológico por meio de um fluxo de automação robótica de processos (RPA) integrado a técnicas de IA e ao uso combinado de bancos de dados relacionais e não relacionais, conforme estudado na disciplina AIRPA. A proposta é simular um robô capaz de monitorar dados clínicos estruturados, interpretar informações textuais e registrar alertas de forma rastreável.
+
+Desenvolver um fluxo automatizado que leia periodicamente dados clínicos simulados (por exemplo: pressão arterial, frequência cardíaca e adesão ao tratamento) armazenados em um banco relacional.
+Utilizar um banco não relacional para registrar logs de execução, mensagens textuais de pacientes ou metadados do processo.
+Aplicar técnicas simples de IA vistas em aula para identificar padrões, anomalias ou situações que demandem atenção.
+Registrar alertas e eventos de forma organizada, garantindo rastreabilidade das ações do robô.
+Entregáveis:
+
+Código funcional da automação (Python).
+Estrutura dos bancos de dados relacional e não relacional utilizados.
+Relatório técnico descrevendo o fluxo automatizado, as decisões de projeto e a integração entre RPA, IA e dados.
+Critérios de Avaliação:
+
+Implementação correta do fluxo de automação.
+Uso adequado de bancos de dados relacionais e não relacionais.
+Aplicação coerente das técnicas de IA estudadas.
+Clareza e organização do código e do relatório técnico.
+   
+
+Mensagem final:
+
+Na Fase 5, o CardioIA evolui para um assistente cardiológico conversacional, aproximando tecnologia e usuário por meio da comunicação inteligente. Esta etapa consolida conhecimentos técnicos e reforça habilidades essenciais para o desenvolvimento de soluções digitais em saúde, preparando vocês para desafios reais do mercado e da pesquisa aplicada.
+
+GRUPO
+TRAZER GRUPO ANTERIOR
+Mínimo: 1 | Máximo: 5
+
+Participante (s)
+Procure por nomes ou RM dos participantes
+Caio Rodrigues Castro
+
+caiorcastro@gmail.com
+Envio
+
+Entrega pendente
+Avaliação
+
+Avaliação pendente
+Prazo de entrega
+Quarta-feira, 25 de Março de 2026, às 23h59
+
+Tempo Restante
+39 dias e 8 horas restantes
+
+Última modificação
+-
+
+Grupo
+Grupo 15
+
+Integrantes do Grupo 15
+Caio Rodrigues Castro
+caiorcastro@gmail.com
+

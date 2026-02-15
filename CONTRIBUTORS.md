@@ -8,7 +8,7 @@
 
 # Como colaborar
 
-- Abra issues descrevendo a mudança proposta e relacione com o enunciado da Fase 3.
+- Abra issues descrevendo a mudança proposta e relacione com o enunciado da Fase 5.
 - Crie PRs pequenos, com descrição clara e prints quando aplicável (Node‑RED / Wokwi).
 - Revisão cruzada: ao menos 1 aprovação de outro integrante.
 - Nome de branch: `feat/...`, `fix/...`, `docs/...`.

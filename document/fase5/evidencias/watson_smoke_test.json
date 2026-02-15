@@ -1,0 +1,50 @@
+{
+  "assistant_id": "916f4e72-1315-43c0-8664-e75356ea99ea",
+  "environment_id": "916f4e72-1315-43c0-8664-e75356ea99ea",
+  "prompts": [
+    {
+      "input": "Olá",
+      "output_text": "Olá! Sou o Assistente CardioIA. 🫀\n\n<br />\n\n\n\nEstou aqui para monitorar sua saúde cardíaca. Como posso ajudar?",
+      "intents": [
+        {
+          "intent": "action_25193_intent_28458",
+          "confidence": 1
+        }
+      ],
+      "entities": []
+    },
+    {
+      "input": "Quero agendar uma consulta",
+      "output_text": "Para qual data você gostaria de agendar?",
+      "intents": [
+        {
+          "intent": "action_35789_intent_48144",
+          "confidence": 1
+        }
+      ],
+      "entities": []
+    },
+    {
+      "input": "Estou com dor no peito",
+      "output_text": "🔴 ALERTA DE EMERGÊNCIA 🔴\n\nA dor irradia para o braço esquerdo ou mandíbula? Você sente náusea?",
+      "intents": [
+        {
+          "intent": "action_19229_intent_4594",
+          "confidence": 1
+        }
+      ],
+      "entities": []
+    },
+    {
+      "input": "Obrigado",
+      "output_text": "Eu não entendi. Selecione uma opção válida:",
+      "intents": [
+        {
+          "intent": "action_25193_intent_28458",
+          "confidence": 0.8981814384460449
+        }
+      ],
+      "entities": []
+    }
+  ]
+}

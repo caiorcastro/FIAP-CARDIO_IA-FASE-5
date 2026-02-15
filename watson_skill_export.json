@@ -203,6 +203,63 @@
         },
         {
             "type": "standard",
+            "title": "Sintoma - Falta de Ar",
+            "output": {
+                "generic": [
+                    {
+                        "values": [
+                            {
+                                "text": "Entendi. Falta de ar pode ter várias causas e, em alguns casos, exige atenção.\n\nVocê está com **dor no peito**, **tontura** ou **lábios arroxeados** agora?"
+                            }
+                        ],
+                        "response_type": "text",
+                        "selection_policy": "sequential"
+                    }
+                ]
+            },
+            "conditions": "#falta_de_ar",
+            "dialog_node": "node_falta_de_ar"
+        },
+        {
+            "type": "standard",
+            "title": "Informação - Pressão Alta",
+            "output": {
+                "generic": [
+                    {
+                        "values": [
+                            {
+                                "text": "Pressão alta (hipertensão) é quando a pressão arterial fica frequentemente elevada (por exemplo, **>= 140/90 mmHg**).\n\nSe você tiver uma medida recente, pode me dizer o valor (ex: 150/95) para eu orientar melhor."
+                            }
+                        ],
+                        "response_type": "text",
+                        "selection_policy": "sequential"
+                    }
+                ]
+            },
+            "conditions": "#info_pressao",
+            "dialog_node": "node_info_pressao"
+        },
+        {
+            "type": "standard",
+            "title": "Agradecimento",
+            "output": {
+                "generic": [
+                    {
+                        "values": [
+                            {
+                                "text": "De nada. Estou por aqui.\n\nSe quiser, posso ajudar com **agendamento** ou com **orientações de sinais de alerta**. Como posso te ajudar?"
+                            }
+                        ],
+                        "response_type": "text",
+                        "selection_policy": "sequential"
+                    }
+                ]
+            },
+            "conditions": "#agradecimento",
+            "dialog_node": "node_agradecimento"
+        },
+        {
+            "type": "standard",
             "title": "Emergência - Dor no Peito",
             "output": {
                 "generic": [

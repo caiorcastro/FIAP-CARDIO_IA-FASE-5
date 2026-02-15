@@ -7,6 +7,8 @@ env/
 venv/
 .env
 .env.*
+!.env.example
+!.env.sample
 *.pyc
 
 # Jupyter
@@ -20,6 +22,9 @@ dist/
 # OS/Editor
 .DS_Store
 Thumbs.db
+
+# Local OCR renders (debug only)
+document/other/_enunciado_render/
 
 # Local aux files
 CardioIA-Phase2/

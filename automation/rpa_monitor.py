@@ -7,8 +7,12 @@ from datetime import datetime
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-# Carrega ambiente da raiz da Fase 5
-load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
+# Carrega ambiente procurando em locais comuns:
+# - `./.env` (raiz do repo)
+# - `./FASE5/.env` (compatibilidade com estrutura antiga)
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+for env_path in [os.path.join(repo_root, ".env"), os.path.join(repo_root, "FASE5", ".env")]:
+    load_dotenv(env_path)
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'patients.db')
 LOG_PATH = os.path.join(os.path.dirname(__file__), 'data', 'logs.json')

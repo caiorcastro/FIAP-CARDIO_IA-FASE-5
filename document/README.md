@@ -9,3 +9,6 @@
 ## Outros
 
 - Materiais adicionais podem ser adicionados em `document/other/`
+
+## Fase 5
+- Checklist e relatórios: `document/fase5/README.md`
