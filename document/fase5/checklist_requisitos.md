@@ -37,7 +37,7 @@ Baseado em `enunciado-fase5.txt`.
   - Exemplo e parsing: `notebooks/genai_extraction.ipynb`
 - Conexão com o protótipo (Fase 5)
   - Endpoint: `POST /api/clinical/extract` (`backend/app.py` + `backend/clinical_extraction.py`)
-  - UI: aba "Organizar relato" (`frontend/src/ui/App.tsx`)
+  - UI: aba "Organizar informações" (`frontend/src/ui/App.tsx`)
 - Entregáveis
   - Notebook/código: `notebooks/genai_extraction.ipynb`
   - Documento PDF explicando fluxo: `document/fase5/ir-alem-1_extracao_clinica.md` (e PDF)

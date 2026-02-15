@@ -11,7 +11,7 @@
    - Agendamento (perguntar data e confirmar)
    - Emergência (dor no peito -> pergunta -> orientação)
 5. Mostrar "Ir Além" integrado na UI (rápido):
-   - Aba **Organizar relato**: colar um texto e mostrar o JSON (Ir Além 1)
+   - Aba **Organizar informações**: colar um texto e mostrar o JSON (Ir Além 1)
    - Aba **Monitoramento**: atualizar logs e rodar 1 ciclo do robô (Ir Além 2)
 6. Evidência “viva” (opcional, mas forte para banca):
    - Rodar `python scripts/watson_generate_evidence.py`

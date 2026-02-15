@@ -69,22 +69,21 @@ def main() -> int:
         convo.append({"ts": _now_iso(), "role": "assistant", "text": r["json"].get("response")})
         return r
 
-    # Conversa com entradas mais "humanas" (giria, fora de escopo, confirmacoes)
-    chat("to ruim")
-    chat("to com dor de rabiga")
-    chat("nao, nao e no peito")
-    chat("quero agendar uma consulta")
-    chat("segunda que vem")
-    chat("dor de dente")
-    chat("obrigado")
+    # Conversa "humana" (inclui caso problemático reportado: dor no braço + resposta livre)
+    chat("meu dente ta doendo")
+    chat("to com dor no braço")
+    chat("no direito")
+    chat("voce nao sabe me responder ne")
+    chat("sim ou nao o que????")
+    chat("onde eu acho um médico????")
 
-    # 3) Organizar relato (Ir Alem 1) + triagem (Fase 2)
-    relato = (
+    # 3) Organizar informações (Ir Alem 1) + triagem (Fase 2)
+    texto_base = (
         "Estou com dor no peito ha 2 horas, falta de ar leve e ansiedade. "
         "Medi pressao 150/95 e FC 88 bpm."
     )
-    extract = _post_json(client, "/api/clinical/extract", {"text": relato})
-    triage = _post_json(client, "/api/phase2/triage", {"text": relato})
+    extract = _post_json(client, "/api/clinical/extract", {"text": texto_base})
+    triage = _post_json(client, "/api/phase2/triage", {"text": texto_base})
 
     # 4) Monitoramento (Ir Alem 2)
     monitor_run = _post_json(client, "/api/monitor/run_once", {})
@@ -128,7 +127,7 @@ def main() -> int:
         md_lines.append("")
 
     md_lines += [
-        "## Organizar Relato (Resumo)",
+        "## Organizar Informações (Resumo)",
         "",
         f"Fonte: `{extract['json'].get('source')}`",
         "",
@@ -214,7 +213,7 @@ def main() -> int:
     html += [
         "</div>",
         "<div class='msgs section'>",
-        "<div class='k'>Organizar relato (resumo)</div>",
+        "<div class='k'>Organizar informações (resumo)</div>",
         "<pre>"
         + json.dumps(
             {

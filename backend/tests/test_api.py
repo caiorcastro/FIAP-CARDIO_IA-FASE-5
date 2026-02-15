@@ -69,3 +69,33 @@ def test_monitor_logs_endpoint_empty_ok(client):
     assert res.status_code == 200
     data = res.get_json()
     assert isinstance(data.get("logs"), list)
+
+
+def test_local_dor_no_braco_nao_dispara_emergencia(client):
+    # Regressao: "dor no braço" nao pode virar "dor no peito" por similaridade com exemplos.
+    uid = "u_braco"
+    res = client.post("/api/message", json={"message": "to com dor no braço", "user_id": uid})
+    assert res.status_code == 200
+    txt = (res.get_json().get("response") or "").lower()
+    assert "dor no peito" not in txt
+    assert ("esquerdo" in txt) or ("direito" in txt)
+
+
+def test_local_emergencia_aceita_resposta_livre_sem_travar(client):
+    uid = "u_emerg"
+    r1 = client.post("/api/message", json={"message": "estou com dor no peito", "user_id": uid})
+    assert r1.status_code == 200
+    t1 = (r1.get_json().get("response") or "").lower()
+    assert "sim" in t1 and "não" in t1  # pergunta binaria
+
+    # Resposta "humana" (nao binaria) deve ser interpretada e o fluxo deve avançar.
+    r2 = client.post("/api/message", json={"message": "no direito", "user_id": uid})
+    assert r2.status_code == 200
+    t2 = (r2.get_json().get("response") or "").lower()
+    assert "falta de ar" in t2
+
+    # Mesmo fora do sim/nao, o bot deve sair do loop e oferecer um caminho (ex: agendamento).
+    r3 = client.post("/api/message", json={"message": "onde eu acho um médico????", "user_id": uid})
+    assert r3.status_code == 200
+    t3 = (r3.get_json().get("response") or "").lower()
+    assert ("pré-agendar" in t3) or ("agendar" in t3)

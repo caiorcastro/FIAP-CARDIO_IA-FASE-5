@@ -30,7 +30,7 @@ Protótipo conversacional capaz de interagir em linguagem natural, organizar inf
 ## Visão Geral
 O CardioIA (Fase 5) concentra a experiência do paciente em um único fluxo:
 - conversa (Watson ou Local)
-- triagem e organização de relato clínico (com saída estruturada em JSON)
+- triagem e organização de informações clínicas (com saída estruturada em JSON)
 - monitoramento com automação (RPA) e rastreabilidade por logs
 - ponto de extensão para serviço de análise por imagem (opcional)
 
@@ -49,7 +49,7 @@ Detalhes de colaboração e convenções: `CONTRIBUTORS.md`.
 
 ## O Que o Protótipo Faz
 - **Atendimento inicial por conversa**: acolhe, identifica intenção e conduz um fluxo simples (ex.: saudação, agendamento, sinais de alerta).
-- **Organização de informações clínicas**: a partir do relato do usuário, gera uma saída estruturada (JSON) e um resumo legível.
+- **Organização de informações clínicas**: a partir do texto do usuário, gera uma saída estruturada (JSON) e um resumo legível.
 - **Monitoramento e rastreabilidade**: simula um robô (RPA) que lê dados estruturados, detecta anomalias e registra eventos em logs.
 - **Extensões do projeto**:
   - triagem reaproveitando a lógica da Fase 2
@@ -61,7 +61,7 @@ Detalhes de colaboração e convenções: `CONTRIBUTORS.md`.
 | --- | --- | --- |
 | Conversa | POST | `/api/message` |
 | Triagem (Fase 2) | POST | `/api/phase2/triage` |
-| Organizar relato (GenAI + fallback) | POST | `/api/clinical/extract` |
+| Organizar informações (GenAI + fallback) | POST | `/api/clinical/extract` |
 | Monitoramento (logs) | GET | `/api/monitor/logs` |
 | Monitoramento (rodar 1 ciclo) | POST | `/api/monitor/run_once` |
 | Vitals (conceito Fase 3) | POST | `/api/phase3/vitals` |
@@ -154,12 +154,12 @@ Abra: `http://127.0.0.1:5000`
 Se você estiver dentro da pasta `backend/`, use:
 ```powershell
 pip install -r requirements.txt
-python ..\\run_server.py
+python run_server.py
 ```
 
 Na interface, use as abas:
 - **Conversa**
-- **Organizar relato**
+- **Organizar informações**
 - **Monitoramento**
 - **Imagem (Fase 4)** (opcional)
 

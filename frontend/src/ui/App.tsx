@@ -253,7 +253,7 @@ export default function App() {
             onClick={() => setTab('organizer')}
             type="button"
           >
-            Organizar relato
+            Organizar informações
           </button>
           <button
             className={`tab ${tab === 'monitor' ? 'tab--active' : ''}`}
@@ -324,7 +324,7 @@ export default function App() {
                 <div className="kicker">Ir Além 1</div>
                 <h2>Extração de informações clínicas</h2>
                 <p>
-                  Cole um relato em texto livre e o sistema devolve uma saída <strong>estruturada</strong> (JSON) com triagem
+                  Cole um texto em linguagem natural e o sistema devolve uma saída <strong>estruturada</strong> (JSON) com triagem
                   reaproveitando a Fase 2. Se houver chave do Gemini, usa GenAI; se não, faz fallback local.
                 </p>
               </div>
@@ -343,7 +343,7 @@ export default function App() {
             <section className="grid2">
               <div className="card">
                 <div className="cardTop">
-                  <h3>Relato do paciente</h3>
+                  <h3>Texto do paciente</h3>
                   <button
                     className="ghostBtn"
                     type="button"

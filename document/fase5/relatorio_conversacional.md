@@ -64,14 +64,14 @@ pip install -r backend/requirements.txt
 python run_server.py
 ```
 3. Abrir `http://127.0.0.1:5000`
-4. Na UI, usar as abas: **Conversa**, **Organizar relato**, **Monitoramento**, **Imagem (Fase 4)**.
+4. Na UI, usar as abas: **Conversa**, **Organizar informações**, **Monitoramento**, **Imagem (Fase 4)**.
 
 ## Conexão com as Fases Anteriores (2, 3 e 4)
 Esta fase **não é isolada**: ela consolida a evolução do CardioIA, transformando as peças técnicas anteriores em uma **experiência de atendimento ao paciente**.
 
 - **Fase 2 (IA & NLP / triagem e risco)**  
   Reuso direto no backend: `backend/phase2_triage.py` chama `FASES ANTERIORES/Fase2/src/diagnose.py` para gerar `risk` e `diagnosis`.  
-  Isso aparece no protótipo via `POST /api/phase2/triage` e também dentro do "Organizar relato" (Ir Além 1) via `POST /api/clinical/extract`.
+  Isso aparece no protótipo via `POST /api/phase2/triage` e também dentro do "Organizar informações" (Ir Além 1) via `POST /api/clinical/extract`.
 
 - **Fase 3 (IoT & monitoramento contínuo)**  
   A regra de alerta (temperatura/bpm) foi reaproveitada e exposta em `POST /api/phase3/vitals` (ver `backend/phase3_vitals.py`).  

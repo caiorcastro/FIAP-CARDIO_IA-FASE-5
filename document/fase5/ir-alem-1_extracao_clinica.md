@@ -8,10 +8,10 @@ Notebook: `notebooks/genai_extraction.ipynb`
 
 Integração com o protótipo (Fase 5):
 - Endpoint: `POST /api/clinical/extract` (backend Flask)
-- Interface: aba **"Organizar relato"** (frontend React)
+- Interface: aba **"Organizar informações"** (frontend React)
 
 Abordagem:
-1. Recebemos um texto clínico simulado (ex: relato do paciente).
+1. Recebemos um texto clínico simulado (ex: texto do paciente).
 2. Aplicamos um prompt orientando o modelo a extrair campos relevantes.
 3. A saída é estruturada (JSON) para facilitar armazenamento, validação e integração com outros sistemas.
 

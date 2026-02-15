@@ -109,6 +109,40 @@ class MockAssistantService:
         return session_id
 
     @staticmethod
+    def _arm_side(norm: str) -> str | None:
+        if any(w in norm for w in ["esquerdo", "esquerda"]):
+            return "esquerdo"
+        if any(w in norm for w in ["direito", "direita"]):
+            return "direito"
+        return None
+
+    @staticmethod
+    def _wants_doctor(norm: str) -> bool:
+        # "onde acho um medico", "quero um medico", "hospital", etc.
+        return any(
+            w in norm
+            for w in [
+                "onde acho",
+                "onde eu acho",
+                "onde encontro",
+                "um medico",
+                "um médico",
+                "medico",
+                "médico",
+                "hospital",
+                "pronto socorro",
+                "pronto atendimento",
+                "consulta",
+                "agendar",
+                "marcar",
+            ]
+        )
+
+    @staticmethod
+    def _is_cancel(norm: str) -> bool:
+        return any(w in norm for w in ["cancelar", "cancela", "sair", "parar", "para", "pare", "deixa pra la", "deixa pra lá"])
+
+    @staticmethod
     def _looks_like_date(msg: str) -> bool:
         msg = (msg or "").strip()
         if re.search(r"\b(\d{1,2})/(\d{1,2})/(\d{2,4})\b", msg):
@@ -150,6 +184,12 @@ class MockAssistantService:
         if any(w in norm for w in ["ola", "oi", "bom dia", "boa tarde", "boa noite"]):
             return "saudacao", max(best_score, 0.85)
 
+        # Guard rail importante: não trate "dor no braço" como "dor no peito" só por similaridade.
+        # Isso evita o falso-positivo mais comum no modo LOCAL (Jaccard com exemplos do Watson).
+        if best_name == "dor_no_peito" and not any(w in norm for w in ["peito", "torax", "tórax", "aperto no peito"]):
+            best_name = None
+            best_score = 0.0
+
         return best_name, best_score
 
     def _dialog_text_for_condition(self, condition: str) -> str | None:
@@ -168,32 +208,154 @@ class MockAssistantService:
         norm = _strip_accents_lower(raw)
         state = ctx.get("state", "start")
 
-        is_yes = norm in ["sim", "s", "claro", "isso", "com certeza", "ok", "certo", "sinto", "tenho"]
-        is_no = norm in ["nao", "não", "n", "negativo"]
+        is_yes = norm in ["sim", "s", "claro", "isso", "com certeza", "ok", "certo", "aham", "uhum", "sinto", "tenho"]
+        is_no = norm in ["nao", "não", "n", "negativo", "nao tenho", "não tenho"]
 
-        # Estado: aguardando confirmação na emergência
-        if state == "emergencia_confirmacao":
-            # O export do Watson usa condição `#sim || @sintoma:tontura`.
-            # Para manter coerência no modo local, tratamos sintomas de alerta como "sim".
-            has_red_flag_symptom = any(w in norm for w in ["tontura", "nausea", "náusea", "suor frio", "mandibula", "mandíbula", "braco esquerdo", "braço esquerdo"])
-            if is_yes:
-                ctx["state"] = "start"
-                txt = self._dialog_text_for_condition("#sim") or "🚨 **AÇÃO IMEDIATA**\n\n1. Pare tudo e sente-se.\n2. Mastigue uma aspirina.\n3. **LIGUE 192 (SAMU).**"
-                return {"text": txt, "intents": [{"intent": "sim", "confidence": 1.0}], "entities": []}
-            if has_red_flag_symptom:
-                ctx["state"] = "start"
-                txt = self._dialog_text_for_condition("#sim") or "🚨 **AÇÃO IMEDIATA**\n\n1. Pare tudo e sente-se.\n2. Mastigue uma aspirina.\n3. **LIGUE 192 (SAMU).**"
-                return {"text": txt, "intents": [{"intent": "sim", "confidence": 1.0}], "entities": [{"entity": "sintoma", "value": "red_flag"}]}
-            if is_no:
-                ctx["state"] = "start"
+        # Cancelamento global (não deve prender usuário em nenhum fluxo).
+        if self._is_cancel(norm):
+            ctx["state"] = "start"
+            return {
+                "text": "Tudo bem. Como você prefere seguir agora: agendar uma consulta ou descrever um sintoma (dor no peito, falta de ar, palpitações)?",
+                "intents": [{"intent": "cancelar", "confidence": 1.0}],
+                "entities": [],
+            }
+
+        # Atalho "humano" para entradas muito vagas.
+        if state == "start" and any(w in norm for w in ["to ruim", "tô ruim", "to mal", "tô mal", "passando mal", "mal"]):
+            return {
+                "text": (
+                    "Entendi. Para eu te ajudar sem adivinhar:\n\n"
+                    "1) Qual é o sintoma principal agora? (ex.: dor no peito, falta de ar, palpitações, tontura)\n"
+                    "2) Isso começou há quanto tempo?\n\n"
+                    "Se preferir, você também pode dizer: \"quero agendar uma consulta\"."
+                ),
+                "intents": [{"intent": "sintoma_vago", "confidence": 1.0}],
+                "entities": [],
+            }
+
+        # Estado: emergência (pergunta 1) - irradiação
+        if state in ["emergencia_confirmacao", "emergencia_irradia"]:
+            # Compat: estados antigos caem aqui (emergencia_confirmacao).
+            ctx["state"] = "emergencia_irradia"
+
+            # Se o usuário tentar "sair" perguntando por médico, não trave o fluxo.
+            if self._wants_doctor(norm):
+                ctx["state"] = "agendamento_data"
                 return {
-                    "text": "Mesmo sendo leve, dores no peito devem ser investigadas. Gostaria de agendar uma consulta?",
-                    "intents": [{"intent": "nao", "confidence": 1.0}],
+                    "text": "Posso pré-agendar uma consulta por aqui. Para qual dia você gostaria de marcar? (Ex: 10/03/2026, amanhã, segunda que vem)",
+                    "intents": [{"intent": "agendar_consulta", "confidence": 1.0}],
                     "entities": [],
                 }
+
+            # Aceita "no direito/no esquerdo" como resposta válida para a pergunta de irradiação ao braço esquerdo.
+            arm_side = self._arm_side(norm)
+            if arm_side == "direito":
+                is_no = True
+            if arm_side == "esquerdo":
+                is_yes = True
+
+            mentions_jaw = any(w in norm for w in ["mandibula", "mandíbula"])
+            if mentions_jaw:
+                is_yes = True
+
+            if is_yes:
+                ctx["emergency_irradia"] = True
+                ctx["state"] = "emergencia_sintomas"
+                return {
+                    "text": "Obrigado. Agora responda **Sim** ou **Não**: você sente falta de ar, náusea ou suor frio agora?",
+                    "intents": [{"intent": "emergencia_irradia_sim", "confidence": 1.0}],
+                    "entities": [],
+                }
+            if is_no:
+                ctx["emergency_irradia"] = False
+                ctx["state"] = "emergencia_sintomas"
+                return {
+                    "text": "Entendi. Agora responda **Sim** ou **Não**: você sente falta de ar, náusea ou suor frio agora?",
+                    "intents": [{"intent": "emergencia_irradia_nao", "confidence": 1.0}],
+                    "entities": [],
+                }
+
+            # Se a pessoa está confusa ("sim ou não o quê?"), deixa explícito qual pergunta está ativa.
+            if any(w in norm for w in ["sim ou nao", "sim ou não", "o que", "oq", "do que"]):
+                return {
+                    "text": "Só para eu seguir a triagem: **a dor/pressão se espalha para o braço esquerdo ou para a mandíbula?** (Sim/Não)",
+                    "intents": [{"intent": "emergencia_clarificar", "confidence": 1.0}],
+                    "entities": [],
+                }
+
+            # Escape hatch: não fica preso pedindo Sim/Não para sempre.
+            ctx["emergency_attempts"] = int(ctx.get("emergency_attempts") or 0) + 1
+            if ctx["emergency_attempts"] >= 2:
+                ctx["state"] = "start"
+                return {
+                    "text": (
+                        "Tudo bem. Eu não quero te prender em perguntas.\n\n"
+                        "Você prefere:\n"
+                        "- agendar uma consulta, ou\n"
+                        "- descrever rapidamente o que está sentindo (ex.: dor no peito, falta de ar, palpitações)?"
+                    ),
+                    "intents": [{"intent": "emergencia_escape", "confidence": 1.0}],
+                    "entities": [],
+                }
+
             return {
-                "text": "Por favor, responda com **Sim** ou **Não** para eu orientar com segurança.",
-                "intents": [{"intent": "fallback_confirmacao", "confidence": 1.0}],
+                "text": "Responda com **Sim** ou **Não**: a dor/pressão se espalha para o braço esquerdo ou para a mandíbula?",
+                "intents": [{"intent": "emergencia_irradia_reprompt", "confidence": 1.0}],
+                "entities": [],
+            }
+
+        # Estado: emergência (pergunta 2) - sintomas associados
+        if state == "emergencia_sintomas":
+            if self._wants_doctor(norm):
+                ctx["state"] = "agendamento_data"
+                return {
+                    "text": "Posso pré-agendar uma consulta por aqui. Para qual dia você gostaria de marcar? (Ex: 10/03/2026, amanhã, segunda que vem)",
+                    "intents": [{"intent": "agendar_consulta", "confidence": 1.0}],
+                    "entities": [],
+                }
+
+            if is_yes or any(w in norm for w in ["falta de ar", "suor frio", "nausea", "náusea", "tontura", "desmaio"]):
+                ctx["state"] = "start"
+                return {
+                    "text": (
+                        "Sinais de alerta identificados.\n\n"
+                        "Procure **atendimento de emergência imediatamente**.\n\n"
+                        "Se você quiser, depois disso eu posso ajudar a pré-agendar um retorno com cardiologista."
+                    ),
+                    "intents": [{"intent": "emergencia_alta", "confidence": 1.0}],
+                    "entities": [{"entity": "risk", "value": "alto"}],
+                }
+
+            if is_no:
+                ctx["state"] = "agendamento_data"
+                return {
+                    "text": (
+                        "Entendi. Mesmo sem outros sinais agora, dor no peito merece avaliação.\n\n"
+                        "Quer pré-agendar uma consulta? Para qual dia você gostaria de marcar?"
+                    ),
+                    "intents": [{"intent": "emergencia_media", "confidence": 1.0}],
+                    "entities": [{"entity": "risk", "value": "moderado"}],
+                }
+
+            if any(w in norm for w in ["sim ou nao", "sim ou não", "o que", "oq", "do que"]):
+                return {
+                    "text": "Só para eu seguir: **você sente falta de ar, náusea ou suor frio agora?** (Sim/Não)",
+                    "intents": [{"intent": "emergencia_clarificar_2", "confidence": 1.0}],
+                    "entities": [],
+                }
+
+            ctx["emergency_attempts_2"] = int(ctx.get("emergency_attempts_2") or 0) + 1
+            if ctx["emergency_attempts_2"] >= 2:
+                ctx["state"] = "start"
+                return {
+                    "text": "Tudo bem. Quer que eu pré-agende uma consulta ou prefere descrever o sintoma principal com outras palavras?",
+                    "intents": [{"intent": "emergencia_escape_2", "confidence": 1.0}],
+                    "entities": [],
+                }
+
+            return {
+                "text": "Responda com **Sim** ou **Não**: você sente falta de ar, náusea ou suor frio agora?",
+                "intents": [{"intent": "emergencia_sintomas_reprompt", "confidence": 1.0}],
                 "entities": [],
             }
 
@@ -250,11 +412,14 @@ class MockAssistantService:
 
             # Se mencionar peito sem negacao, ai sim segue o fluxo de emergencia.
             if "peito" in norm:
-                ctx["state"] = "emergencia_confirmacao"
-                txt = self._dialog_text_for_condition("#dor_no_peito")
-                if not txt:
-                    txt = "🔴 **ALERTA DE EMERGÊNCIA** 🔴\n\nA dor irradia para o braço esquerdo ou mandíbula? Você sente náusea ou suor frio?"
-                return {"text": txt, "intents": [{"intent": "dor_no_peito", "confidence": 0.9}], "entities": []}
+                ctx["state"] = "emergencia_irradia"
+                # No modo LOCAL, preferimos uma pergunta binária (uma coisa por vez),
+                # em vez de reutilizar o texto do export (que costuma juntar 2 perguntas).
+                return {
+                    "text": "Responda **Sim** ou **Não**: a dor/pressão se espalha para o braço esquerdo ou para a mandíbula?",
+                    "intents": [{"intent": "dor_no_peito", "confidence": 0.9}],
+                    "entities": [],
+                }
 
             # Palavras de localizacao fora do escopo cardiologico: faz redirecionamento.
             if any(w in norm for w in ["dente", "dent", "rabiga", "bunda", "anus", "ânus"]):
@@ -286,6 +451,112 @@ class MockAssistantService:
             {"role": "user", "text": raw.strip(), "ts": datetime.now(timezone.utc).isoformat()}
         )
 
+        # Dor no braço (muito comum em conversa humana): não dispare emergência direto.
+        if "dor" in norm and any(w in norm for w in ["braco", "braço"]) and "peito" not in norm and state == "start":
+            ctx["state"] = "braco_lado"
+            return {
+                "text": "Entendi: dor no braço. É no braço **esquerdo** ou **direito**?",
+                "intents": [{"intent": "dor_no_braco", "confidence": 1.0}],
+                "entities": [],
+            }
+
+        # Fluxo: dor no braço -> coletar lado
+        if state == "braco_lado":
+            side = self._arm_side(norm)
+            if side:
+                ctx["arm_side"] = side
+                ctx["state"] = "braco_peito"
+                return {
+                    "text": "Obrigado. Agora responda **Sim** ou **Não**: você também sente dor/pressão no **peito**?",
+                    "intents": [{"intent": "braco_lado_informado", "confidence": 1.0}],
+                    "entities": [{"entity": "arm_side", "value": side}],
+                }
+            return {
+                "text": "Só para eu registrar: é no braço **esquerdo** ou **direito**?",
+                "intents": [{"intent": "braco_lado_perguntar", "confidence": 1.0}],
+                "entities": [],
+            }
+
+        # Fluxo: dor no braço -> pergunta se há dor no peito
+        if state == "braco_peito":
+            if self._wants_doctor(norm):
+                ctx["state"] = "agendamento_data"
+                return {
+                    "text": "Posso pré-agendar uma consulta por aqui. Para qual dia você gostaria de marcar?",
+                    "intents": [{"intent": "agendar_consulta", "confidence": 1.0}],
+                    "entities": [],
+                }
+            if is_yes or "peito" in norm:
+                ctx["state"] = "emergencia_irradia"
+                return {
+                    "text": "Entendi. Responda **Sim** ou **Não**: a dor/pressão se espalha para o braço esquerdo ou para a mandíbula?",
+                    "intents": [{"intent": "dor_no_peito", "confidence": 1.0}],
+                    "entities": [],
+                }
+            if is_no:
+                ctx["state"] = "braco_sintomas"
+                return {
+                    "text": "Entendi. Responda **Sim** ou **Não**: você tem falta de ar, tontura, náusea ou suor frio junto dessa dor?",
+                    "intents": [{"intent": "braco_sem_peito", "confidence": 1.0}],
+                    "entities": [],
+                }
+            # Evita travar o usuario: explica a pergunta e oferece saida.
+            if any(w in norm for w in ["sim ou nao", "sim ou não", "o que", "oq", "do que", "como assim"]):
+                return {
+                    "text": "Só para eu entender o risco: **além do braço, você sente dor/pressão no peito?** (Sim/Não)",
+                    "intents": [{"intent": "braco_peito_clarificar", "confidence": 1.0}],
+                    "entities": [],
+                }
+
+            ctx["braco_attempts"] = int(ctx.get("braco_attempts") or 0) + 1
+            if ctx["braco_attempts"] >= 2:
+                ctx["state"] = "start"
+                return {
+                    "text": (
+                        "Tudo bem. Sem essa resposta eu não quero te orientar errado.\n\n"
+                        "Você prefere:\n"
+                        "- pré-agendar uma consulta, ou\n"
+                        "- descrever a dor em 1 frase (ex.: pontada, formigamento, começou quando)?"
+                    ),
+                    "intents": [{"intent": "braco_escape", "confidence": 1.0}],
+                    "entities": [],
+                }
+
+            return {
+                "text": "Para eu seguir: além do braço, você sente dor/pressão no **peito**? (Sim/Não)",
+                "intents": [{"intent": "braco_peito_reprompt", "confidence": 1.0}],
+                "entities": [],
+            }
+
+        # Fluxo: dor no braço -> sintomas associados
+        if state == "braco_sintomas":
+            if self._wants_doctor(norm):
+                ctx["state"] = "agendamento_data"
+                return {
+                    "text": "Posso pré-agendar uma consulta por aqui. Para qual dia você gostaria de marcar?",
+                    "intents": [{"intent": "agendar_consulta", "confidence": 1.0}],
+                    "entities": [],
+                }
+            if is_yes or any(w in norm for w in ["falta de ar", "tontura", "nausea", "náusea", "suor frio", "desmaio"]):
+                ctx["state"] = "start"
+                return {
+                    "text": "Entendi. Esses sinais podem indicar maior risco. Procure avaliação médica com urgência. Se quiser, posso pré-agendar uma consulta.",
+                    "intents": [{"intent": "braco_alerta", "confidence": 1.0}],
+                    "entities": [{"entity": "risk", "value": "moderado"}],
+                }
+            if is_no:
+                ctx["state"] = "agendamento_data"
+                return {
+                    "text": "Entendi. Posso pré-agendar uma consulta para você investigar isso com calma. Para qual dia você gostaria de marcar?",
+                    "intents": [{"intent": "agendar_consulta", "confidence": 1.0}],
+                    "entities": [],
+                }
+            return {
+                "text": "Responda com **Sim** ou **Não**: você tem falta de ar, tontura, náusea ou suor frio junto dessa dor?",
+                "intents": [{"intent": "braco_sintomas_reprompt", "confidence": 1.0}],
+                "entities": [],
+            }
+
         # Dor fora do contexto cardiologico: pede esclarecimento antes de disparar emergencia.
         if "dor" in norm and intent is None:
             ctx["state"] = "dor_esclarecimento"
@@ -307,7 +578,7 @@ class MockAssistantService:
                 "text": (
                     "Entendi. Isso parece fugir do meu foco (cardiologia).\n\n"
                     "Se você quiser, eu posso:\n"
-                    "- ajudar a **organizar** os sintomas do seu relato (para levar a uma consulta)\n"
+                    "- ajudar a **organizar** as informações (para levar a uma consulta)\n"
                     "- ou **pré-agendar** uma consulta com cardiologista, se houver sintomas cardíacos.\n\n"
                     "Você quer organizar as informações ou falar de sintomas como dor no peito, falta de ar ou palpitações?"
                 ),
@@ -316,11 +587,12 @@ class MockAssistantService:
             }
 
         if intent == "dor_no_peito":
-            ctx["state"] = "emergencia_confirmacao"
-            txt = self._dialog_text_for_condition("#dor_no_peito")
-            if not txt:
-                txt = "🔴 **ALERTA DE EMERGÊNCIA** 🔴\n\nA dor irradia para o braço esquerdo ou mandíbula? Você sente náusea ou suor frio?"
-            return {"text": txt, "intents": [{"intent": intent, "confidence": score}], "entities": []}
+            ctx["state"] = "emergencia_irradia"
+            return {
+                "text": "Responda **Sim** ou **Não**: a dor/pressão se espalha para o braço esquerdo ou para a mandíbula?",
+                "intents": [{"intent": intent, "confidence": score}],
+                "entities": [],
+            }
 
         if intent == "agendar_consulta":
             ctx["state"] = "agendamento_data"
