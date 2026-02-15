@@ -4,7 +4,6 @@ import json
 import os
 import time
 from datetime import datetime
-import google.generativeai as genai
 from dotenv import load_dotenv
 
 # Carrega ambiente procurando em locais comuns:
@@ -16,26 +15,43 @@ for env_path in [os.path.join(repo_root, ".env"), os.path.join(repo_root, "FASE5
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'patients.db')
 LOG_PATH = os.path.join(os.path.dirname(__file__), 'data', 'logs.json')
-api_key = os.getenv("GEMINI_API_KEY")
+api_key = (os.getenv("GEMINI_API_KEY") or "").strip()
+model_name = (os.getenv("GEMINI_MODEL") or "").strip()
+model = None
 
+# Evita carregar a lib/stack do Gemini quando nao ha chave.
 if api_key:
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-pro')
-else:
-    model = None
-    print("AVISO: Chave Gemini não encontrada. Logs serão genéricos.")
+    try:
+        import google.generativeai as genai
+
+        genai.configure(api_key=api_key)
+
+        candidates = [model_name] if model_name else []
+        candidates += ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"]
+        candidates = [c for c in candidates if c]
+
+        for name in candidates:
+            try:
+                model = genai.GenerativeModel(name)
+                break
+            except Exception:
+                model = None
+                continue
+    except Exception:
+        model = None
 
 def analyze_risk_with_ai(patient_name, sys, dia, bpm):
     """Usa IA para gerar uma descrição clínica do alerta."""
     if not model:
-        return f"Alerta automático: {patient_name} com vitais alterados ({sys}/{dia}, {bpm}bpm)."
+        return f"Alerta automático: {patient_name} com vitais alterados (PA {sys}/{dia}, FC {bpm} bpm)."
     
     prompt = f"O paciente {patient_name} apresentou PA {sys}/{dia} mmHg e FC {bpm} bpm. Gere um breve log clínico de 1 frase recomendando ação."
     try:
         response = model.generate_content(prompt)
         return response.text.strip()
     except:
-        return "Erro na geração de log por IA."
+        # Nao quebra a rastreabilidade; apenas faz fallback.
+        return f"Alerta automático: {patient_name} com vitais alterados (PA {sys}/{dia}, FC {bpm} bpm)."
 
 def run_rpa_cycle():
     print("--- Iniciando Ciclo RPA ---")

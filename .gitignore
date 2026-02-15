@@ -26,6 +26,10 @@ Thumbs.db
 # Local OCR renders (debug only)
 document/other/_enunciado_render/
 
+# Generated runtime artifacts
+automation/data/
+document/fase5/evidencias/local_smoke_*
+
 # Local aux files
 CardioIA-Phase2/
 read_pdf.py
