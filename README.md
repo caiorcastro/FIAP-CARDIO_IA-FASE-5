@@ -145,10 +145,17 @@ Variáveis:
 
 ### 1. Backend + Frontend (Chat)
 ```powershell
+# Na raiz do repositório:
 pip install -r backend/requirements.txt
 python run_server.py
 ```
 Abra: `http://127.0.0.1:5000`
+
+Se você estiver dentro da pasta `backend/`, use:
+```powershell
+pip install -r requirements.txt
+python ..\\run_server.py
+```
 
 Na interface, use as abas:
 - **Conversa**
