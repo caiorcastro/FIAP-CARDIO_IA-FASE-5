@@ -69,12 +69,14 @@ def main() -> int:
         convo.append({"ts": _now_iso(), "role": "assistant", "text": r["json"].get("response")})
         return r
 
-    chat("Oi, tudo bem?")
-    chat("Quero agendar uma consulta")
-    chat("10/03/2026")
-    chat("Estou com dor no peito")
-    chat("sim")
-    chat("Obrigado")
+    # Conversa com entradas mais "humanas" (giria, fora de escopo, confirmacoes)
+    chat("to ruim")
+    chat("to com dor de rabiga")
+    chat("nao, nao e no peito")
+    chat("quero agendar uma consulta")
+    chat("segunda que vem")
+    chat("dor de dente")
+    chat("obrigado")
 
     # 3) Organizar relato (Ir Alem 1) + triagem (Fase 2)
     relato = (

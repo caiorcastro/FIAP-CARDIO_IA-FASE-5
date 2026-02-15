@@ -134,8 +134,15 @@ class MockAssistantService:
                 if score > best_score:
                     best_name, best_score = name, score
 
+        # Evita falso-positivo: se a similaridade for muito baixa, trate como "sem intenção".
+        if best_score < 0.34:
+            best_name = None
+
         # reforços por palavras-chave (em saúde isso melhora bastante)
         norm = _strip_accents_lower(message)
+        # Negacao explicita evita falso positivo para dor no peito.
+        if ("nao" in norm or "não" in norm) and "peito" in norm and "dor" not in norm:
+            return None, 0.0
         if any(w in norm for w in ["dor no peito", "infarto", "socorro", "aperto no peito"]):
             return "dor_no_peito", 1.0
         if any(w in norm for w in ["agendar", "marcar", "consulta", "cardiologista", "horario"]):
@@ -161,7 +168,7 @@ class MockAssistantService:
         norm = _strip_accents_lower(raw)
         state = ctx.get("state", "start")
 
-        is_yes = norm in ["sim", "s", "claro", "isso", "com certeza", "ok", "certo"]
+        is_yes = norm in ["sim", "s", "claro", "isso", "com certeza", "ok", "certo", "sinto", "tenho"]
         is_no = norm in ["nao", "não", "n", "negativo"]
 
         # Estado: aguardando confirmação na emergência
@@ -193,7 +200,8 @@ class MockAssistantService:
         # Estado: aguardando data do agendamento
         if state == "agendamento_data":
             if self._looks_like_date(raw):
-                ctx["state"] = "start"
+                # Depois da data, pedimos uma observacao/motivo (estado dedicado) para nao entrar em loop.
+                ctx["state"] = "agendamento_observacao"
                 txt = self._dialog_text_for_condition("@sys-date") or f"Entendido. Consulta pré-agendada para **{raw.strip()}**."
                 # substitui placeholder usado no export
                 txt = txt.replace("<? @sys-date ?>", raw.strip())
@@ -208,11 +216,104 @@ class MockAssistantService:
                 "entities": [],
             }
 
+        # Estado: coletando observacao/motivo do agendamento
+        if state == "agendamento_observacao":
+            ctx["state"] = "start"
+            motivo = raw.strip()
+            if not motivo:
+                return {
+                    "text": "Tudo bem. Consulta pré-agendada. Posso te ajudar com mais alguma coisa?",
+                    "intents": [{"intent": "confirmar_agendamento", "confidence": 1.0}],
+                    "entities": [],
+                }
+            # Se o usuario mandar outra data aqui, trate como observacao mesmo (nao reinicia fluxo).
+            return {
+                "text": f"Perfeito. Registrei a observação: **{motivo}**.\n\nPosso te ajudar com mais alguma coisa?",
+                "intents": [{"intent": "confirmar_agendamento", "confidence": 1.0}],
+                "entities": [{"entity": "observacao", "value": motivo}],
+            }
+
+        # Estado: esclarecendo localizacao/descricao de dor (antes de assumir dor no peito)
+        if state == "dor_esclarecimento":
+            # Se o usuario negar explicitamente "peito", NAO dispare emergencia.
+            if ("nao" in norm or "não" in norm) and "peito" in norm:
+                ctx["state"] = "start"
+                return {
+                    "text": (
+                        "Entendi, então **não é dor no peito**.\n\n"
+                        "Para eu não te orientar errado, me diga onde é a dor (ex.: barriga, costas, cabeça, dente...) "
+                        "e se você tem algum sintoma como falta de ar, palpitações, tontura, náusea ou suor frio."
+                    ),
+                    "intents": [{"intent": "esclarecer_dor", "confidence": 1.0}],
+                    "entities": [{"entity": "dor_no_peito", "value": "nao"}],
+                }
+
+            # Se mencionar peito sem negacao, ai sim segue o fluxo de emergencia.
+            if "peito" in norm:
+                ctx["state"] = "emergencia_confirmacao"
+                txt = self._dialog_text_for_condition("#dor_no_peito")
+                if not txt:
+                    txt = "🔴 **ALERTA DE EMERGÊNCIA** 🔴\n\nA dor irradia para o braço esquerdo ou mandíbula? Você sente náusea ou suor frio?"
+                return {"text": txt, "intents": [{"intent": "dor_no_peito", "confidence": 0.9}], "entities": []}
+
+            # Palavras de localizacao fora do escopo cardiologico: faz redirecionamento.
+            if any(w in norm for w in ["dente", "dent", "rabiga", "bunda", "anus", "ânus"]):
+                ctx["state"] = "start"
+                return {
+                    "text": (
+                        "Entendi. Isso parece fugir do meu foco (cardiologia).\n\n"
+                        "Se você quiser, eu posso ajudar a **organizar** o que você está sentindo (para levar a uma consulta) "
+                        "ou, se houver sintomas cardíacos, seguir com uma triagem por aqui.\n\n"
+                        "Você prefere organizar as informações ou falar de sintomas como dor no peito, falta de ar ou palpitações?"
+                    ),
+                    "intents": [{"intent": "fora_escopo", "confidence": 1.0}],
+                    "entities": [],
+                }
+
+            # Se nao deu para entender, continua perguntando.
+            return {
+                "text": (
+                    "Entendi. Só para eu acertar:\n\n"
+                    "Onde exatamente é a dor (peito, costas, barriga, cabeça, dente...)?"
+                ),
+                "intents": [{"intent": "esclarecer_dor", "confidence": 1.0}],
+                "entities": [],
+            }
+
         # Classifica intenção a partir das intents do JSON
         intent, score = self._best_intent(raw)
         ctx.get("history", []).append(
             {"role": "user", "text": raw.strip(), "ts": datetime.now(timezone.utc).isoformat()}
         )
+
+        # Dor fora do contexto cardiologico: pede esclarecimento antes de disparar emergencia.
+        if "dor" in norm and intent is None:
+            ctx["state"] = "dor_esclarecimento"
+            return {
+                "text": (
+                    "Entendi que você está com dor.\n\n"
+                    "Para eu te orientar melhor, me diga:\n"
+                    "1) Onde é a dor (peito, costas, barriga, cabeça, dente...)?\n"
+                    "2) Começou quando?\n"
+                    "3) Tem falta de ar, tontura, náusea ou suor frio junto?"
+                ),
+                "intents": [{"intent": "esclarecer_dor", "confidence": 1.0}],
+                "entities": [],
+            }
+
+        # Sintomas claramente fora do escopo cardiologico: faz redirecionamento sem travar fluxo.
+        if any(w in norm for w in ["dente", "dent", "rabiga", "bunda", "anus", "ânus"]) and intent != "dor_no_peito":
+            return {
+                "text": (
+                    "Entendi. Isso parece fugir do meu foco (cardiologia).\n\n"
+                    "Se você quiser, eu posso:\n"
+                    "- ajudar a **organizar** os sintomas do seu relato (para levar a uma consulta)\n"
+                    "- ou **pré-agendar** uma consulta com cardiologista, se houver sintomas cardíacos.\n\n"
+                    "Você quer organizar as informações ou falar de sintomas como dor no peito, falta de ar ou palpitações?"
+                ),
+                "intents": [{"intent": "fora_escopo", "confidence": 1.0}],
+                "entities": [],
+            }
 
         if intent == "dor_no_peito":
             ctx["state"] = "emergencia_confirmacao"
